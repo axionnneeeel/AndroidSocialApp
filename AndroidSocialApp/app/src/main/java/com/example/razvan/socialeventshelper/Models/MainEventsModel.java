@@ -6,12 +6,14 @@ package com.example.razvan.socialeventshelper.Models;
 
 public class MainEventsModel {
     private String title;
+    private String coverPhoto;
 
     public MainEventsModel() {
     }
 
-    public MainEventsModel(String title) {
+    public MainEventsModel(String title,String coverPhoto) {
         this.title = title;
+        this.coverPhoto = coverPhoto;
     }
 
     public String getTitle() {
@@ -20,5 +22,13 @@ public class MainEventsModel {
 
     public void setTitle(String name) {
         this.title = name;
+    }
+
+    public String getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(String coverPhoto) {
+        this.coverPhoto = coverPhoto;
     }
 }

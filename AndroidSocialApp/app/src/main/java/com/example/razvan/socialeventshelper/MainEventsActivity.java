@@ -128,32 +128,54 @@ public class MainEventsActivity extends AppCompatActivity {
         }
     }
 
-    private void fetchEventsInformation(Map<String,String> eventsSorted){
+    private void fetchEventsInformation(final Map<String,String> eventsSorted){
         StringBuilder allEventIds = new StringBuilder();
         for(Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
             allEventIds.append(eachEvent.getKey()+",");
-            MainEventsModel currentEvent = new MainEventsModel(eachEvent.getKey());
-            eventsList.add(currentEvent);
         }
         allEventIds.setLength(allEventIds.length()-1);
 
         String finalIds = allEventIds.toString();
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "?ids="+finalIds+"&fields=id,name,cover,description,place&access_token="
+                "?ids="+finalIds+"&fields=name,place,start_time,cover,description&access_token="
                         + this.getString(R.string.explorer_token),
                 null,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        Log.i("CRECAOK",response.toString());
+                        transformToJSONAndShow(response,eventsSorted);
                     }
                 }
         ).executeAsync();
         Log.i("fetchinfo",task.toString());
+    }
 
-        eventsAdapter.notifyDataSetChanged();
-        refreshLayout.setRefreshing(false);
+    private void transformToJSONAndShow(GraphResponse response,Map<String,String> eventsSorted){
+        try {
+            JSONObject resultJSONObj = response.getJSONObject();
+            for(Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
+                String eachEventDataString = resultJSONObj.getString(eachEvent.getKey());
+
+                JSONObject eachEventDataJSON = new JSONObject(eachEventDataString);
+                String eventTitle = eachEventDataJSON.getString("name");
+
+                String takingPlaceString = eachEventDataJSON.getString("place");
+                JSONObject takingPlaceJSON = new JSONObject(takingPlaceString);
+                String takingPlace = takingPlaceJSON.getString("name");
+
+                String coverPhotoString = eachEventDataJSON.getString("cover");
+                JSONObject coverPhotoJSON = new JSONObject(coverPhotoString);
+                String coverPhoto = coverPhotoJSON.getString("source");
+
+                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto);
+                eventsList.add(currentEvent);
+            }
+            eventsAdapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
     @OnClick(R.id.fab)

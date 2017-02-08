@@ -8,10 +8,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
+import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
 
 import java.util.List;
 
@@ -21,10 +23,12 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
+        public ImageView coverPhoto;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
+            coverPhoto = (ImageView) view.findViewById(R.id.eventImage);
         }
     }
 
@@ -45,6 +49,7 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MainEventsModel event = eventsList.get(position);
         holder.title.setText(event.getTitle());
+        new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
     }
 
     @Override
