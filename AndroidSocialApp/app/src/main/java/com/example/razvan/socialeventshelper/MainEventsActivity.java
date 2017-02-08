@@ -1,8 +1,5 @@
 package com.example.razvan.socialeventshelper;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,21 +13,22 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
+import com.example.razvan.socialeventshelper.Utils.MapUtil;
 import com.facebook.AccessToken;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
@@ -54,6 +52,8 @@ public class MainEventsActivity extends AppCompatActivity {
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout refreshLayout;
 
+    private final long tenDaysInSeconds = 864000;
+
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class MainEventsActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 eventsList.clear();
-                if(isNetworkAvailable())
+                if(GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
                     fetchEvents();
                 else {
                     Toast.makeText(MainEventsActivity.this, "No internet connection. Open it and refresh.", Toast.LENGTH_LONG).show();
@@ -83,7 +83,7 @@ public class MainEventsActivity extends AppCompatActivity {
             }
         });
 
-        if(isNetworkAvailable())
+        if(GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
             fetchEvents();
         else
             Toast.makeText(this,"No internet connection. Open it and refresh.",Toast.LENGTH_LONG).show();
@@ -93,7 +93,7 @@ public class MainEventsActivity extends AppCompatActivity {
         long currentTimeMilliSeconds = System.currentTimeMillis();
         long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(currentTimeMilliSeconds);
 
-        long timeAfter10Days = currentTimeSeconds + 864000;
+        long timeAfter10Days = currentTimeSeconds + tenDaysInSeconds;
 
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
@@ -103,37 +103,57 @@ public class MainEventsActivity extends AppCompatActivity {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        transformToJSONAndFilter(response);
+                        transformToJSONAndSortByDate(response);
                     }
                 }
         ).executeAsync();
-        Log.i("taskul",task.toString());
+        Log.i("fetchev",task.toString());
     }
 
-    private void transformToJSONAndFilter(GraphResponse response){
+    private void transformToJSONAndSortByDate(GraphResponse response){
         try {
             JSONObject resultJSONObj = response.getJSONObject();
             JSONArray resultJSON = resultJSONObj.getJSONArray("data");
+            Map<String,String> eventsIdsTimeSorted = new HashMap<>(100);
 
             for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
-                Log.i("ceplm",currentObject.getString("name"));
-                MainEventsModel currentEvent = new MainEventsModel(currentObject.getString("name"));
-                eventsList.add(currentEvent);
-
+                eventsIdsTimeSorted.put( currentObject.getString("id"), currentObject.getString("start_time"));
             }
-            eventsAdapter.notifyDataSetChanged();
-            refreshLayout.setRefreshing(false);
+
+            eventsIdsTimeSorted = MapUtil.sortByValue( eventsIdsTimeSorted );
+            fetchEventsInformation(eventsIdsTimeSorted);
         }catch (JSONException e){
             e.printStackTrace();
         }
     }
 
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    private void fetchEventsInformation(Map<String,String> eventsSorted){
+        StringBuilder allEventIds = new StringBuilder();
+        for(Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
+            allEventIds.append(eachEvent.getKey()+",");
+            MainEventsModel currentEvent = new MainEventsModel(eachEvent.getKey());
+            eventsList.add(currentEvent);
+        }
+        allEventIds.setLength(allEventIds.length()-1);
+
+        String finalIds = allEventIds.toString();
+        GraphRequestAsyncTask task = new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "?ids="+finalIds+"&fields=id,name,cover,description,place&access_token="
+                        + this.getString(R.string.explorer_token),
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        Log.i("CRECAOK",response.toString());
+                    }
+                }
+        ).executeAsync();
+        Log.i("fetchinfo",task.toString());
+
+        eventsAdapter.notifyDataSetChanged();
+        refreshLayout.setRefreshing(false);
     }
 
     @OnClick(R.id.fab)
