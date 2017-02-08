@@ -1,24 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
-    android:layout_width="wrap_content"
-    android:focusable="true"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
-    android:clickable="true"
-    android:background="?android:attr/selectableItemBackground"
-    android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:orientation="vertical"
+    android:weightSum="1.0">
 
-    <TextView
-        android:id="@+id/title"
-        android:textColor="@color/com_facebook_blue"
-        android:textSize="16dp"
-        android:textStyle="bold"
-        android:layout_alignParentTop="true"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="DAAADDSD"/>
+        android:layout_height="0dp"
+        android:layout_weight=".99">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/eventImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:minHeight="230dp"
+            android:src="@color/com_facebook_blue"
+            android:scaleType="centerCrop"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:padding="5dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/event_date_day"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="23"
+                android:textSize="23dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/event_date_month"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="APR"
+                android:textColor="@color/colorPrimary"
+                android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llcontent"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignTop="@+id/splitterLeft"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/splitterLeft"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Lorem Ipsum"
+                android:textColor="@color/colorPrimary"
+                android:textSize="19dp"/>
+
+            <TextView
+                android:id="@+id/event_streetName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Lorem Street 13 Ipsum"
+                android:textSize="12dp"/>
+
+            <TextView
+                android:id="@+id/event_placeSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24 Friends Going"
+                android:textSize="10dp"/>
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/splitterLeft"
+            android:layout_width="1px"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@+id/linearLayout"
+            android:background="#33000000"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

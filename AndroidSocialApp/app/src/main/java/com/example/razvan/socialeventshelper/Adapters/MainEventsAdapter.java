@@ -17,10 +17,10 @@ import java.util.List;
 
 public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.MyViewHolder> {
 
-    private List<MainEventsModel> moviesList;
+    private List<MainEventsModel> eventsList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, year, genre;
+        public TextView title;
 
         public MyViewHolder(View view) {
             super(view);
@@ -29,8 +29,8 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     }
 
 
-    public MainEventsAdapter(List<MainEventsModel> moviesList) {
-        this.moviesList = moviesList;
+    public MainEventsAdapter(List<MainEventsModel> eventsList) {
+        this.eventsList = eventsList;
     }
 
     @Override
@@ -43,12 +43,12 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        MainEventsModel movie = moviesList.get(position);
-        holder.title.setText(movie.getTitle());
+        MainEventsModel event = eventsList.get(position);
+        holder.title.setText(event.getTitle());
     }
 
     @Override
     public int getItemCount() {
-        return moviesList.size();
+        return eventsList.size();
     }
 }

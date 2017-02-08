@@ -1,5 +1,8 @@
 package com.example.razvan.socialeventshelper;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
@@ -50,8 +54,8 @@ public class MainEventsActivity extends AppCompatActivity {
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout refreshLayout;
 
-    private MainEventsAdapter mAdapter;
-    private List<MainEventsModel> movieList = new ArrayList<>();
+    private MainEventsAdapter eventsAdapter;
+    private List<MainEventsModel> eventsList = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -59,21 +63,30 @@ public class MainEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
-        mAdapter = new MainEventsAdapter(movieList);
+        eventsAdapter = new MainEventsAdapter(eventsList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         eventsView.setLayoutManager(mLayoutManager);
         eventsView.setItemAnimator(new DefaultItemAnimator());
-        eventsView.setAdapter(mAdapter);
+        eventsView.setAdapter(eventsAdapter);
 
         eventsView.setHasFixedSize(true);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-
+                eventsList.clear();
+                if(isNetworkAvailable())
+                    fetchEvents();
+                else {
+                    Toast.makeText(MainEventsActivity.this, "No internet connection. Open it and refresh.", Toast.LENGTH_LONG).show();
+                    refreshLayout.setRefreshing(false);
+                }
             }
         });
 
-        fetchEvents();
+        if(isNetworkAvailable())
+            fetchEvents();
+        else
+            Toast.makeText(this,"No internet connection. Open it and refresh.",Toast.LENGTH_LONG).show();
     }
 
     private void fetchEvents(){
@@ -102,17 +115,25 @@ public class MainEventsActivity extends AppCompatActivity {
             JSONObject resultJSONObj = response.getJSONObject();
             JSONArray resultJSON = resultJSONObj.getJSONArray("data");
 
-            for (int eachJSON = 1; eachJSON < resultJSON.length(); eachJSON++) {
+            for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
                 Log.i("ceplm",currentObject.getString("name"));
                 MainEventsModel currentEvent = new MainEventsModel(currentObject.getString("name"));
-                movieList.add(currentEvent);
+                eventsList.add(currentEvent);
 
             }
-            mAdapter.notifyDataSetChanged();
+            eventsAdapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
         }catch (JSONException e){
             e.printStackTrace();
         }
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @OnClick(R.id.fab)
