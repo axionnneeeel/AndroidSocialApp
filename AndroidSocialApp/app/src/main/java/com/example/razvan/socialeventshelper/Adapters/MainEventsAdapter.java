@@ -15,6 +15,8 @@ import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.MyViewHolder> {
@@ -24,11 +26,19 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
         public ImageView coverPhoto;
+        public TextView takingPlace;
+        public TextView eventDay;
+        public TextView eventMonth;
+        public TextView eventHour;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
-            coverPhoto = (ImageView) view.findViewById(R.id.eventImage);
+            coverPhoto = (ImageView) view.findViewById(R.id.event_cover);
+            takingPlace = (TextView) view.findViewById(R.id.event_street_name);
+            eventDay = (TextView) view.findViewById(R.id.event_day);
+            eventMonth = (TextView) view.findViewById(R.id.event_month);
+            eventHour = (TextView) view.findViewById(R.id.event_start_time);
         }
     }
 
@@ -49,6 +59,10 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     public void onBindViewHolder(MyViewHolder holder, int position) {
         MainEventsModel event = eventsList.get(position);
         holder.title.setText(event.getTitle());
+        holder.takingPlace.setText(event.getTakingPlace());
+        holder.eventDay.setText(event.getEventDay());
+        holder.eventMonth.setText(event.getEventMonth());
+        holder.eventHour.setText("Start time: "+event.getEventHour());
         new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
     }
 

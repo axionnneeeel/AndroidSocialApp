@@ -168,7 +168,13 @@ public class MainEventsActivity extends AppCompatActivity {
                 JSONObject coverPhotoJSON = new JSONObject(coverPhotoString);
                 String coverPhoto = coverPhotoJSON.getString("source");
 
-                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto);
+                String eventTime = eachEventDataJSON.getString("start_time");
+                String[] splittedTime = eventTime.split("-");
+                String eventDay = splittedTime[2].substring(0,2);
+                String eventMonth = GeneralUtils.getMonthNameFromNumber(splittedTime[1]);
+                String eventHour = splittedTime[2].substring(3,8);
+
+                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto,takingPlace,eventDay,eventMonth,eventHour);
                 eventsList.add(currentEvent);
             }
             eventsAdapter.notifyDataSetChanged();
