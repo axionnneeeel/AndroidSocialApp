@@ -97,7 +97,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/search?q=Iasi&type=event&since="+currentTimeSeconds+"&until="+timeAfter10Days+"&access_token="
+                "/search?q=Vaslui&type=event&since="+currentTimeSeconds+"&until="+timeAfter10Days+"&access_token="
                         + this.getString(R.string.explorer_token),
                 null,
                 HttpMethod.GET,
@@ -118,7 +118,8 @@ public class MainEventsActivity extends AppCompatActivity {
 
             for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
-                eventsIdsTimeSorted.put( currentObject.getString("id"), currentObject.getString("start_time"));
+                if(currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\""))
+                    eventsIdsTimeSorted.put( currentObject.getString("id"), currentObject.getString("start_time"));
             }
 
             eventsIdsTimeSorted = MapUtil.sortByValue( eventsIdsTimeSorted );

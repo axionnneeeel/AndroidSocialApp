@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="300dp"
     android:orientation="vertical"
-    android:weightSum="1.0">
+    android:weightSum="1.0"
+    android:paddingBottom="15dp">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -104,5 +105,6 @@
             android:background="#33000000"/>
 
     </RelativeLayout>
+
 
 </LinearLayout>
