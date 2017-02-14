@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,13 +16,19 @@ import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
 
-import org.w3c.dom.Text;
 
 import java.util.List;
 
 public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.MyViewHolder> {
 
     private List<MainEventsModel> eventsList;
+    private final OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(MainEventsModel item);
+    }
+
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title;
@@ -43,8 +50,9 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     }
 
 
-    public MainEventsAdapter(List<MainEventsModel> eventsList) {
+    public MainEventsAdapter(List<MainEventsModel> eventsList,OnItemClickListener listener) {
         this.eventsList = eventsList;
+        this.listener = listener;
     }
 
     @Override
@@ -57,13 +65,20 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        MainEventsModel event = eventsList.get(position);
+        final MainEventsModel event = eventsList.get(position);
         holder.title.setText(event.getTitle());
         holder.takingPlace.setText(event.getTakingPlace());
         holder.eventDay.setText(event.getEventDay());
         holder.eventMonth.setText(event.getEventMonth());
         holder.eventHour.setText("Start time: "+event.getEventHour());
         new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
+
+        holder.coverPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClick(event);
+            }
+        });
+
     }
 
     @Override

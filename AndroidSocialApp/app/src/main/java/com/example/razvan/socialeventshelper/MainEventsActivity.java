@@ -1,5 +1,6 @@
 package com.example.razvan.socialeventshelper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -63,7 +64,15 @@ public class MainEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
-        eventsAdapter = new MainEventsAdapter(eventsList);
+        eventsAdapter = new MainEventsAdapter(eventsList,new MainEventsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(MainEventsModel item) {
+                Intent detailsIntent = new Intent(MainEventsActivity.this,EventDetailsActivity.class);
+                detailsIntent.putExtra("myEvent",item);
+                startActivity(detailsIntent);
+            }
+        });
+
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         eventsView.setLayoutManager(mLayoutManager);
         eventsView.setItemAnimator(new DefaultItemAnimator());

@@ -1,10 +1,12 @@
 package com.example.razvan.socialeventshelper.Models;
 
+import java.io.Serializable;
+
 /**
  * Created by Razvan on 2/7/2017.
  */
 
-public class MainEventsModel {
+public class MainEventsModel implements Serializable {
     private String title;
     private String coverPhoto;
     private String takingPlace;

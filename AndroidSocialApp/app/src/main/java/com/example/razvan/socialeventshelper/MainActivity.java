@@ -26,10 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
-        /*Intent eventsIntent = new Intent(this,MainEventsActivity.class);
-        startActivity(eventsIntent);*/
-
-        Intent eventsIntent = new Intent(this,EventDetailsActivity.class);
+        Intent eventsIntent = new Intent(this,MainEventsActivity.class);
         startActivity(eventsIntent);
     }
 
