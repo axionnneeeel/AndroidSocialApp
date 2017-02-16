@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +53,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         eventDay.setText(event.getEventDay());
         eventMonth.setText(event.getEventMonth());
         eventHour.setText("Start time: "+event.getEventHour());
-        new ImageLoadTask(event.getCoverPhoto(), coverPhoto).execute();
+        Picasso.with(this).load(event.getCoverPhoto()).fit().into(coverPhoto);
     }
 }

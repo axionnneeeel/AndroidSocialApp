@@ -64,7 +64,7 @@ public class MainEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
-        eventsAdapter = new MainEventsAdapter(eventsList,new MainEventsAdapter.OnItemClickListener() {
+        eventsAdapter = new MainEventsAdapter(eventsList,this,new MainEventsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MainEventsModel item) {
                 Intent detailsIntent = new Intent(MainEventsActivity.this,EventDetailsActivity.class);

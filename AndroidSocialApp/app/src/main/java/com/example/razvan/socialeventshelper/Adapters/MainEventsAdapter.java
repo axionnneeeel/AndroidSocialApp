@@ -4,6 +4,7 @@ package com.example.razvan.socialeventshelper.Adapters;
  * Created by Razvan on 2/7/2017.
  */
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
+import com.squareup.picasso.Picasso;
 
 
 import java.util.List;
@@ -23,6 +25,8 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
 
     private List<MainEventsModel> eventsList;
     private final OnItemClickListener listener;
+    private Context context;
+
 
     public interface OnItemClickListener {
         void onItemClick(MainEventsModel item);
@@ -50,9 +54,10 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     }
 
 
-    public MainEventsAdapter(List<MainEventsModel> eventsList,OnItemClickListener listener) {
+    public MainEventsAdapter(List<MainEventsModel> eventsList,Context context,OnItemClickListener listener) {
         this.eventsList = eventsList;
         this.listener = listener;
+        this.context = context;
     }
 
     @Override
@@ -71,7 +76,8 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
         holder.eventDay.setText(event.getEventDay());
         holder.eventMonth.setText(event.getEventMonth());
         holder.eventHour.setText("Start time: "+event.getEventHour());
-        new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
+        //new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
+        Picasso.with(context).load(event.getCoverPhoto()).fit().into(holder.coverPhoto);
 
         holder.coverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
