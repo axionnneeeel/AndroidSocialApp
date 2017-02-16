@@ -106,7 +106,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/search?q=Vaslui&type=event&since="+currentTimeSeconds+"&until="+timeAfter10Days+"&access_token="
+                "/search?q=Iasi&type=event&since="+currentTimeSeconds+"&until="+timeAfter10Days+"&access_token="
                         + this.getString(R.string.explorer_token),
                 null,
                 HttpMethod.GET,
@@ -184,7 +184,9 @@ public class MainEventsActivity extends AppCompatActivity {
                 String eventMonth = GeneralUtils.getMonthNameFromNumber(splittedTime[1]);
                 String eventHour = splittedTime[2].substring(3,8);
 
-                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto,takingPlace,eventDay,eventMonth,eventHour);
+                String eventDescription = eachEventDataJSON.getString("description");
+
+                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto,takingPlace,eventDay,eventMonth,eventHour,eventDescription);
                 eventsList.add(currentEvent);
             }
             eventsAdapter.notifyDataSetChanged();

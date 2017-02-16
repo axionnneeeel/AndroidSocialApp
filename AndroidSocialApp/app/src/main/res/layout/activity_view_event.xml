@@ -46,10 +46,11 @@
                     android:id="@+id/toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Toolbar Title"
-                    android:textColor="#c9ffffff"
-                    android:textSize="16sp"/>
+                    android:layout_gravity="left"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    android:maxLines="1"
+                    />
 
 
             </android.support.v7.widget.Toolbar>
@@ -145,13 +146,6 @@
                                 android:text="Lorem Street 13 Ipsum"
                                 android:textSize="12dp"/>
 
-                            <TextView
-                                android:id="@+id/event_placeSubtitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="24 Friends Going"
-                                android:textSize="10dp"/>
-
                         </LinearLayout>
 
                         <View
@@ -193,7 +187,8 @@
                                 android:layout_gravity="start"
                                 android:clipChildren="false"
                                 android:clipToPadding="false"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:paddingTop="10dp">
 
                                 <ImageView
                                     android:id="@+id/event_interested_heart"
@@ -210,7 +205,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:text="Interest"
+                                    android:text="Interested"
                                     android:textSize="12sp"/>
 
                             </LinearLayout>
@@ -220,7 +215,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:orientation="vertical">
+                                android:orientation="vertical"
+                                android:paddingTop="10dp">
 
                                 <CheckBox
                                     android:id="@+id/event_going_check"
@@ -244,7 +240,8 @@
                                 android:layout_gravity="end"
                                 android:orientation="vertical"
                                 android:paddingEnd="14dp"
-                                android:paddingStart="10dp">
+                                android:paddingStart="10dp"
+                                android:paddingTop="10dp">
 
                                 <ImageView
                                     android:id="@+id/event_invite_image"
@@ -276,23 +273,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="10dp">
+                        android:paddingLeft="10dp"
+                        android:paddingTop="10dp">
 
                         <TextView
                             android:id="@+id/event_stats"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Interested"
+                            android:text="Details"
                             android:textStyle="bold"/>
 
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1px"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginTop="5dp"
-                        android:background="@color/colorPrimaryDark"/>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -318,8 +310,8 @@
 
                                 <ImageView
                                     android:id="@+id/simple_image"
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
                                     android:scaleType="centerCrop"
                                     android:src="@drawable/ic_access_time_black_64dp"
                                     android:tint="@color/colorPrimary"/>
@@ -340,7 +332,8 @@
                                         android:layout_height="wrap_content"
                                         android:text="Hour"
                                         android:textAppearance="?android:attr/textAppearanceMedium"
-                                        android:textColor="@android:color/black"/>
+                                        android:textColor="@android:color/black"
+                                        android:textSize="16sp"/>
 
                                 </LinearLayout>
 
@@ -366,8 +359,8 @@
                                 android:padding="5dp">
 
                                 <ImageView
-                                    android:layout_width="28dp"
-                                    android:layout_height="28dp"
+                                    android:layout_width="22dp"
+                                    android:layout_height="22dp"
                                     android:scaleType="centerCrop"
                                     android:src="@drawable/ic_place_black_64dp"
                                     android:tint="@color/colorPrimary"/>
@@ -387,13 +380,8 @@
                                         android:layout_height="wrap_content"
                                         android:text="Name"
                                         android:textAppearance="?android:attr/textAppearanceMedium"
-                                        android:textColor="@android:color/black"/>
-
-                                    <TextView
-                                        android:id="@+id/event_location_description"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="Description"/>
+                                        android:textColor="@android:color/black"
+                                        android:textSize="16sp"/>
 
                                 </LinearLayout>
 
@@ -419,8 +407,9 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Details"
-                            android:textStyle="bold"/>
+                            android:text="Description"
+                            android:textStyle="bold"
+                            android:paddingBottom="10dp"/>
 
                         <TextView
                             android:id="@+id/event_details"

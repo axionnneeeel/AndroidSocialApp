@@ -76,7 +76,6 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
         holder.eventDay.setText(event.getEventDay());
         holder.eventMonth.setText(event.getEventMonth());
         holder.eventHour.setText("Start time: "+event.getEventHour());
-        //new ImageLoadTask(event.getCoverPhoto(), holder.coverPhoto).execute();
         Picasso.with(context).load(event.getCoverPhoto()).fit().into(holder.coverPhoto);
 
         holder.coverPhoto.setOnClickListener(new View.OnClickListener() {

@@ -13,17 +13,19 @@ public class MainEventsModel implements Serializable {
     private String eventDay;
     private String eventMonth;
     private String eventHour;
+    private String eventDescription;
 
     public MainEventsModel() {
     }
 
-    public MainEventsModel(String title,String coverPhoto,String takingPlace,String eventDay,String eventMonth,String eventHour) {
+    public MainEventsModel(String title,String coverPhoto,String takingPlace,String eventDay,String eventMonth,String eventHour,String eventDescription) {
         this.title = title;
         this.coverPhoto = coverPhoto;
         this.takingPlace = takingPlace;
         this.eventDay = eventDay;
         this.eventMonth = eventMonth;
         this.eventHour = eventHour;
+        this.eventDescription = eventDescription;
     }
 
     public String getTitle() {
@@ -72,5 +74,13 @@ public class MainEventsModel implements Serializable {
 
     public void setEventHour(String eventHour) {
         this.eventHour = eventHour;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public void setEventDescription(String eventDescription) {
+        this.eventDescription = eventDescription;
     }
 }
