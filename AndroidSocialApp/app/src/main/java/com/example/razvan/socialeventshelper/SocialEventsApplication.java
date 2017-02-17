@@ -8,6 +8,7 @@ import com.facebook.appevents.AppEventsLogger;
  */
 
 public class SocialEventsApplication extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();

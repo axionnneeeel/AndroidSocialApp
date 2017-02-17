@@ -3,14 +3,12 @@ package com.example.razvan.socialeventshelper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -31,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -41,19 +38,13 @@ import butterknife.OnClick;
  */
 
 public class MainEventsActivity extends AppCompatActivity {
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
     @BindView(R.id.swipe_refresh_recyclerView)
     RecyclerView eventsView;
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout refreshLayout;
 
-    private final long tenDaysInSeconds = 864000;
+    private final long TEN_DAYS_IN_SECONDS = 864000;
 
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
@@ -102,7 +93,7 @@ public class MainEventsActivity extends AppCompatActivity {
         long currentTimeMilliSeconds = System.currentTimeMillis();
         long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(currentTimeMilliSeconds);
 
-        long timeAfter10Days = currentTimeSeconds + tenDaysInSeconds;
+        long timeAfter10Days = currentTimeSeconds + TEN_DAYS_IN_SECONDS;
 
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),

@@ -7,9 +7,9 @@ import java.io.Serializable;
  */
 
 public class MainEventsModel implements Serializable {
-    private String title;
-    private String coverPhoto;
-    private String takingPlace;
+    private String eventTitle;
+    private String eventCoverPhoto;
+    private String eventTakingPlace;
     private String eventDay;
     private String eventMonth;
     private String eventHour;
@@ -18,38 +18,38 @@ public class MainEventsModel implements Serializable {
     public MainEventsModel() {
     }
 
-    public MainEventsModel(String title,String coverPhoto,String takingPlace,String eventDay,String eventMonth,String eventHour,String eventDescription) {
-        this.title = title;
-        this.coverPhoto = coverPhoto;
-        this.takingPlace = takingPlace;
+    public MainEventsModel(String eventTitle,String eventCoverPhoto,String eventTakingPlace,String eventDay,String eventMonth,String eventHour,String eventDescription) {
+        this.eventTitle = eventTitle;
+        this.eventCoverPhoto = eventCoverPhoto;
+        this.eventTakingPlace = eventTakingPlace;
         this.eventDay = eventDay;
         this.eventMonth = eventMonth;
         this.eventHour = eventHour;
         this.eventDescription = eventDescription;
     }
 
-    public String getTitle() {
-        return title;
+    public String getEventTitle() {
+        return eventTitle;
     }
 
-    public void setTitle(String name) {
-        this.title = name;
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
     }
 
-    public String getCoverPhoto() {
-        return coverPhoto;
+    public String getEventCoverPhoto() {
+        return eventCoverPhoto;
     }
 
-    public void setCoverPhoto(String coverPhoto) {
-        this.coverPhoto = coverPhoto;
+    public void setEventCoverPhoto(String eventCoverPhoto) {
+        this.eventCoverPhoto = eventCoverPhoto;
     }
 
-    public String getTakingPlace() {
-        return takingPlace;
+    public String getEventTakingPlace() {
+        return eventTakingPlace;
     }
 
-    public void setTakingPlace(String takingPlace) {
-        this.takingPlace = takingPlace;
+    public void setEventTakingPlace(String eventTakingPlace) {
+        this.eventTakingPlace = eventTakingPlace;
     }
 
     public String getEventDay() {

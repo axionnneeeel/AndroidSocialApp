@@ -9,13 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
-import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
 import com.squareup.picasso.Picasso;
 
 
@@ -35,18 +32,18 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title;
-        public ImageView coverPhoto;
-        public TextView takingPlace;
+        public TextView eventTitle;
+        public ImageView eventCoverPhoto;
+        public TextView eventTakingPlace;
         public TextView eventDay;
         public TextView eventMonth;
         public TextView eventHour;
 
         public MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            coverPhoto = (ImageView) view.findViewById(R.id.event_cover);
-            takingPlace = (TextView) view.findViewById(R.id.event_street_name);
+            eventTitle = (TextView) view.findViewById(R.id.event_title);
+            eventCoverPhoto = (ImageView) view.findViewById(R.id.event_cover);
+            eventTakingPlace = (TextView) view.findViewById(R.id.event_street);
             eventDay = (TextView) view.findViewById(R.id.event_day);
             eventMonth = (TextView) view.findViewById(R.id.event_month);
             eventHour = (TextView) view.findViewById(R.id.event_start_time);
@@ -71,14 +68,14 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final MainEventsModel event = eventsList.get(position);
-        holder.title.setText(event.getTitle());
-        holder.takingPlace.setText(event.getTakingPlace());
+        holder.eventTitle.setText(event.getEventTitle());
+        holder.eventTakingPlace.setText(event.getEventTakingPlace());
         holder.eventDay.setText(event.getEventDay());
         holder.eventMonth.setText(event.getEventMonth());
         holder.eventHour.setText("Start time: "+event.getEventHour());
-        Picasso.with(context).load(event.getCoverPhoto()).fit().into(holder.coverPhoto);
+        Picasso.with(context).load(event.getEventCoverPhoto()).fit().into(holder.eventCoverPhoto);
 
-        holder.coverPhoto.setOnClickListener(new View.OnClickListener() {
+        holder.eventCoverPhoto.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 listener.onItemClick(event);
             }

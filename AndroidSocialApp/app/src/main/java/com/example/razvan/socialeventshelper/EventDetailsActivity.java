@@ -1,20 +1,12 @@
 package com.example.razvan.socialeventshelper;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
-import com.example.razvan.socialeventshelper.Utils.ImageLoadTask;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -24,25 +16,22 @@ import butterknife.ButterKnife;
 
 public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.event_name)
-    TextView eventName;
+    TextView eventTitle;
 
-    @BindView(R.id.event_streetName)
-    TextView takingPlace;
+    @BindView(R.id.event_street)
+    TextView eventTakingPlace;
 
-    @BindView(R.id.event_date_day)
+    @BindView(R.id.event_day)
     TextView eventDay;
 
-    @BindView(R.id.event_date_month)
+    @BindView(R.id.event_month)
     TextView eventMonth;
 
     @BindView(R.id.event_hour)
     TextView eventHour;
 
-    @BindView(R.id.cover_photo)
-    ImageView coverPhoto;
-
-    @BindView(R.id.toolbar_title)
-    TextView title;
+    @BindView(R.id.event_cover_photo)
+    ImageView eventCoverPhoto;
 
     @BindView(R.id.event_location_name)
     TextView eventLocation;
@@ -50,11 +39,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     @BindView(R.id.event_details)
     TextView eventDetails;
 
-    @BindView(R.id.collapsing_toolbar)
-    CollapsingToolbarLayout collapsingToolbarLayout;
-
     @BindView(R.id.app_bar)
     AppBarLayout appBarLayout;
+
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,19 +53,19 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         final MainEventsModel myEvent = (MainEventsModel) getIntent().getSerializableExtra("myEvent");
         bindEventInfo(myEvent);
-        setCollapsingToolbarBehaviour(myEvent.getTitle());
+        setCollapsingToolbarBehaviour(myEvent.getEventTitle());
 
     }
 
     private void bindEventInfo(MainEventsModel event){
-        eventName.setText(event.getTitle());
-        takingPlace.setText(event.getTakingPlace());
+        eventTitle.setText(event.getEventTitle());
+        eventTakingPlace.setText(event.getEventTakingPlace());
         eventDay.setText(event.getEventDay());
         eventMonth.setText(event.getEventMonth());
         eventHour.setText(event.getEventDay()+" "+event.getEventMonth().toLowerCase()+" at "+event.getEventHour());
-        eventLocation.setText(event.getTakingPlace());
+        eventLocation.setText(event.getEventTakingPlace());
         eventDetails.setText(event.getEventDescription());
-        Picasso.with(this).load(event.getCoverPhoto()).fit().into(coverPhoto);
+        Picasso.with(this).load(event.getEventCoverPhoto()).fit().into(eventCoverPhoto);
     }
 
     private void setCollapsingToolbarBehaviour(final String eventTitle){
@@ -89,10 +79,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                     scrollRange = appBarLayout.getTotalScrollRange();
                 }
                 if (scrollRange + verticalOffset == 0) {
-                    title.setText(eventTitle);
+                    toolbarTitle.setText(eventTitle);
                     isShow = true;
                 } else if(isShow) {
-                    title.setText(" ");
+                    toolbarTitle.setText(" ");
                     isShow = false;
                 }
             }
