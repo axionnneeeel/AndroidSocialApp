@@ -189,7 +189,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     void onFabClick(View view){
-        Snackbar.make(view, "Da", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show();
+        Intent mapIntent = new Intent(this,MapsActivity.class);
+        startActivity(mapIntent);
     }
 }
