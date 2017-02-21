@@ -1,9 +1,17 @@
 package com.example.razvan.socialeventshelper;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
@@ -21,14 +30,19 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -38,6 +52,7 @@ import butterknife.OnClick;
  */
 
 public class MainEventsActivity extends AppCompatActivity {
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     @BindView(R.id.swipe_refresh_recyclerView)
     RecyclerView eventsView;
 
@@ -45,9 +60,14 @@ public class MainEventsActivity extends AppCompatActivity {
     SwipeRefreshLayout refreshLayout;
 
     private final long TEN_DAYS_IN_SECONDS = 864000;
+    private final long LOCATION_REFRESH_TIME = 0;
+    private final long LOCATION_REFRESH_DISTANCE = 10000;
 
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
+
+    Location currentLocation;
+    double currentLatitude,currentLongitude;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,11 +75,15 @@ public class MainEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
-        eventsAdapter = new MainEventsAdapter(eventsList,this,new MainEventsAdapter.OnItemClickListener() {
+        findLocation();
+    }
+
+    private void recyclerViewSettings(final String cityName){
+        eventsAdapter = new MainEventsAdapter(eventsList, this, new MainEventsAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(MainEventsModel item) {
-                Intent detailsIntent = new Intent(MainEventsActivity.this,EventDetailsActivity.class);
-                detailsIntent.putExtra("myEvent",item);
+                Intent detailsIntent = new Intent(MainEventsActivity.this, EventDetailsActivity.class);
+                detailsIntent.putExtra("myEvent", item);
                 startActivity(detailsIntent);
             }
         });
@@ -74,8 +98,8 @@ public class MainEventsActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 eventsList.clear();
-                if(GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
-                    fetchEvents();
+                if (GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
+                    fetchEvents(cityName);
                 else {
                     Toast.makeText(MainEventsActivity.this, "No internet connection. Open it and refresh.", Toast.LENGTH_LONG).show();
                     refreshLayout.setRefreshing(false);
@@ -83,13 +107,13 @@ public class MainEventsActivity extends AppCompatActivity {
             }
         });
 
-        if(GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
-            fetchEvents();
+        if (GeneralUtils.isNetworkAvailable(MainEventsActivity.this))
+            fetchEvents(cityName);
         else
-            Toast.makeText(this,"No internet connection. Open it and refresh.",Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "No internet connection. Open it and refresh.", Toast.LENGTH_LONG).show();
     }
 
-    private void fetchEvents(){
+    private void fetchEvents(String cityName) {
         long currentTimeMilliSeconds = System.currentTimeMillis();
         long currentTimeSeconds = TimeUnit.MILLISECONDS.toSeconds(currentTimeMilliSeconds);
 
@@ -97,7 +121,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "/search?q=Iasi&type=event&since="+currentTimeSeconds+"&until="+timeAfter10Days+"&access_token="
+                "/search?q="+cityName+"&type=event&since=" + currentTimeSeconds + "&until=" + timeAfter10Days + "&access_token="
                         + this.getString(R.string.explorer_token),
                 null,
                 HttpMethod.GET,
@@ -107,55 +131,55 @@ public class MainEventsActivity extends AppCompatActivity {
                     }
                 }
         ).executeAsync();
-        Log.i("fetchev",task.toString());
+        Log.i("fetchev", task.toString());
     }
 
-    private void transformToJSONAndSortByDate(GraphResponse response){
+    private void transformToJSONAndSortByDate(GraphResponse response) {
         try {
             JSONObject resultJSONObj = response.getJSONObject();
             JSONArray resultJSON = resultJSONObj.getJSONArray("data");
-            Map<String,String> eventsIdsTimeSorted = new HashMap<>(100);
+            Map<String, String> eventsIdsTimeSorted = new HashMap<>(100);
 
             for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
-                if(currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\""))
-                    eventsIdsTimeSorted.put( currentObject.getString("id"), currentObject.getString("start_time"));
+                if (currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\""))
+                    eventsIdsTimeSorted.put(currentObject.getString("id"), currentObject.getString("start_time"));
             }
 
-            eventsIdsTimeSorted = MapUtil.sortByValue( eventsIdsTimeSorted );
+            eventsIdsTimeSorted = MapUtil.sortByValue(eventsIdsTimeSorted);
             fetchEventsInformation(eventsIdsTimeSorted);
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void fetchEventsInformation(final Map<String,String> eventsSorted){
+    private void fetchEventsInformation(final Map<String, String> eventsSorted) {
         StringBuilder allEventIds = new StringBuilder();
-        for(Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
-            allEventIds.append(eachEvent.getKey()+",");
+        for (Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
+            allEventIds.append(eachEvent.getKey() + ",");
         }
-        allEventIds.setLength(allEventIds.length()-1);
+        allEventIds.setLength(allEventIds.length() - 1);
 
         String finalIds = allEventIds.toString();
         GraphRequestAsyncTask task = new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
-                "?ids="+finalIds+"&fields=name,place,start_time,cover,description&access_token="
+                "?ids=" + finalIds + "&fields=name,place,start_time,cover,description&access_token="
                         + this.getString(R.string.explorer_token),
                 null,
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        transformToJSONAndShow(response,eventsSorted);
+                        transformToJSONAndShow(response, eventsSorted);
                     }
                 }
         ).executeAsync();
-        Log.i("fetchinfo",task.toString());
+        Log.i("fetchinfo", task.toString());
     }
 
-    private void transformToJSONAndShow(GraphResponse response,Map<String,String> eventsSorted){
+    private void transformToJSONAndShow(GraphResponse response, Map<String, String> eventsSorted) {
         try {
             JSONObject resultJSONObj = response.getJSONObject();
-            for(Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
+            for (Map.Entry<String, String> eachEvent : eventsSorted.entrySet()) {
                 String eachEventDataString = resultJSONObj.getString(eachEvent.getKey());
 
                 JSONObject eachEventDataJSON = new JSONObject(eachEventDataString);
@@ -171,20 +195,66 @@ public class MainEventsActivity extends AppCompatActivity {
 
                 String eventTime = eachEventDataJSON.getString("start_time");
                 String[] splittedTime = eventTime.split("-");
-                String eventDay = splittedTime[2].substring(0,2);
+                String eventDay = splittedTime[2].substring(0, 2);
                 String eventMonth = GeneralUtils.getMonthNameFromNumber(splittedTime[1]);
-                String eventHour = splittedTime[2].substring(3,8);
+                String eventHour = splittedTime[2].substring(3, 8);
 
                 String eventDescription = eachEventDataJSON.getString("description");
 
-                MainEventsModel currentEvent = new MainEventsModel(eventTitle,coverPhoto,takingPlace,eventDay,eventMonth,eventHour,eventDescription);
+                MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription);
                 eventsList.add(currentEvent);
             }
             eventsAdapter.notifyDataSetChanged();
             refreshLayout.setRefreshing(false);
-        }catch (JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void findLocation() {
+        LocationManager locationManager = (LocationManager) this
+                .getSystemService(Context.LOCATION_SERVICE);
+
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                updateLocation(location);
+
+                Geocoder gcd = new Geocoder(MainEventsActivity.this, Locale.getDefault());
+                List<Address> addresses = null;
+                try {
+                    addresses = gcd.getFromLocation(currentLatitude, currentLongitude, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                recyclerViewSettings(addresses.get(0).getLocality());
+
+            }
+
+            public void onStatusChanged(String provider, int status,
+                                        Bundle extras) {
+            }
+
+            public void onProviderEnabled(String provider) {
+            }
+
+            public void onProviderDisabled(String provider) {
+            }
+        };
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener);
+
+    }
+
+
+    void updateLocation(Location location) {
+        currentLocation = location;
+        currentLatitude = currentLocation.getLatitude();
+        currentLongitude = currentLocation.getLongitude();
+
     }
 
     @OnClick(R.id.fab)
