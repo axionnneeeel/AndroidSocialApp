@@ -1,12 +1,15 @@
 package com.example.razvan.socialeventshelper.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by Razvan on 2/7/2017.
  */
 
-public class MainEventsModel implements Serializable {
+public class MainEventsModel implements Serializable,Parcelable {
     private String eventTitle;
     private String eventCoverPhoto;
     private String eventTakingPlace;
@@ -14,11 +17,19 @@ public class MainEventsModel implements Serializable {
     private String eventMonth;
     private String eventHour;
     private String eventDescription;
+    private Double eventLatitude;
+    private Double eventLongitude;
 
     public MainEventsModel() {
     }
 
-    public MainEventsModel(String eventTitle,String eventCoverPhoto,String eventTakingPlace,String eventDay,String eventMonth,String eventHour,String eventDescription) {
+    public MainEventsModel(Parcel source){
+        eventTitle = source.readString();
+        eventLatitude = source.readDouble();
+        eventLongitude = source.readDouble();
+    }
+
+    public MainEventsModel(String eventTitle,String eventCoverPhoto,String eventTakingPlace,String eventDay,String eventMonth,String eventHour,String eventDescription,Double eventLatitude,Double eventLongitude) {
         this.eventTitle = eventTitle;
         this.eventCoverPhoto = eventCoverPhoto;
         this.eventTakingPlace = eventTakingPlace;
@@ -26,6 +37,8 @@ public class MainEventsModel implements Serializable {
         this.eventMonth = eventMonth;
         this.eventHour = eventHour;
         this.eventDescription = eventDescription;
+        this.eventLatitude = eventLatitude;
+        this.eventLongitude = eventLongitude;
     }
 
     public String getEventTitle() {
@@ -83,4 +96,42 @@ public class MainEventsModel implements Serializable {
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
     }
+
+    public Double getEventLatitude() {
+        return eventLatitude;
+    }
+
+    public void setEventLatitude(Double eventLatitude) {
+        this.eventLatitude = eventLatitude;
+    }
+
+    public Double getEventLongitude() {
+        return eventLongitude;
+    }
+
+    public void setEventLongitude(Double eventLongitude) {
+        this.eventLongitude = eventLongitude;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(eventTitle);
+        parcel.writeDouble(eventLatitude);
+        parcel.writeDouble(eventLongitude);
+    }
+
+    public static final Parcelable.Creator<MainEventsModel> CREATOR = new Parcelable.Creator<MainEventsModel>() {
+        public MainEventsModel createFromParcel(Parcel in) {
+            return new MainEventsModel(in);
+        }
+
+        public MainEventsModel[] newArray(int size) {
+            return new MainEventsModel[size];
+        }
+    };
 }

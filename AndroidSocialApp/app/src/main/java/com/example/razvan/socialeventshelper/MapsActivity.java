@@ -11,6 +11,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -20,6 +22,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
 
 
 /**
@@ -39,7 +44,7 @@ public class MapsActivity extends AppCompatActivity
     private Location lastLocation;
     private final LatLng defaultLocation = new LatLng(47.151726, 27.587914);
 
-    private static final int DEFAULT_ZOOM = 8;
+    private static final int DEFAULT_ZOOM = 10;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
@@ -81,6 +86,8 @@ public class MapsActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         googleMaps = map;
+
+        putEventsMarker();
         updateLocationUI();
         getDeviceLocation();
     }
@@ -164,6 +171,15 @@ public class MapsActivity extends AppCompatActivity
             googleMaps.setMyLocationEnabled(false);
             googleMaps.getUiSettings().setMyLocationButtonEnabled(false);
             lastLocation = null;
+        }
+    }
+
+    public void putEventsMarker(){
+        ArrayList<MainEventsModel> eventsList = getIntent().getParcelableArrayListExtra("all_events");
+
+        for(MainEventsModel currentEvent : eventsList) {
+            LatLng currentEventCoord = new LatLng(currentEvent.getEventLatitude(),currentEvent.getEventLongitude());
+            googleMaps.addMarker(new MarkerOptions().position(currentEventCoord).title(currentEvent.getEventTitle()));
         }
     }
 

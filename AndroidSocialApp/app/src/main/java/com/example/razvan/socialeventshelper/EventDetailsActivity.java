@@ -51,7 +51,7 @@ public class EventDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_event);
         ButterKnife.bind(this);
 
-        final MainEventsModel myEvent = (MainEventsModel) getIntent().getSerializableExtra("myEvent");
+        final MainEventsModel myEvent = (MainEventsModel) getIntent().getSerializableExtra("my_event");
         bindEventInfo(myEvent);
         setCollapsingToolbarBehaviour(myEvent.getEventTitle());
 

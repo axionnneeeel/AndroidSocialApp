@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -35,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -119,7 +121,7 @@ public class MainEventsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(MainEventsModel item) {
                 Intent detailsIntent = new Intent(MainEventsActivity.this, EventDetailsActivity.class);
-                detailsIntent.putExtra("myEvent", item);
+                detailsIntent.putExtra("my_event", (Serializable) item);
                 startActivity(detailsIntent);
             }
         });
@@ -225,6 +227,11 @@ public class MainEventsActivity extends AppCompatActivity {
                 JSONObject takingPlaceJSON = new JSONObject(takingPlaceString);
                 String takingPlace = takingPlaceJSON.getString("name");
 
+                String evLatLongString = takingPlaceJSON.getString("location");
+                JSONObject evLatLongJSON = new JSONObject(evLatLongString);
+                String evLat = evLatLongJSON.getString("latitude");
+                String evLong = evLatLongJSON.getString("longitude");
+
                 String coverPhotoString = eachEventDataJSON.getString("cover");
                 JSONObject coverPhotoJSON = new JSONObject(coverPhotoString);
                 String coverPhoto = coverPhotoJSON.getString("source");
@@ -237,7 +244,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
                 String eventDescription = eachEventDataJSON.getString("description");
 
-                MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription);
+                MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription, Double.parseDouble(evLat), Double.parseDouble(evLong));
                 eventsList.add(currentEvent);
             }
             eventsAdapter.notifyDataSetChanged();
@@ -250,6 +257,7 @@ public class MainEventsActivity extends AppCompatActivity {
     @OnClick(R.id.fab)
     void onFabClick(View view){
         Intent mapIntent = new Intent(this,MapsActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         startActivity(mapIntent);
     }
 }
