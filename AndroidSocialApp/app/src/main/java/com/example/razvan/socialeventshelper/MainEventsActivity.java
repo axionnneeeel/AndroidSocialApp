@@ -124,7 +124,7 @@ public class MainEventsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(MainEventsModel item) {
                 Intent detailsIntent = new Intent(MainEventsActivity.this, EventDetailsActivity.class);
-                detailsIntent.putExtra("my_event", (Serializable) item);
+                detailsIntent.putExtra("my_event", item);
                 startActivity(detailsIntent);
             }
         });
@@ -259,9 +259,12 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.fab)
     void onFabClick(View view){
-        Intent mapIntent = new Intent(this,MapsActivity.class);
+        /*Intent mapIntent = new Intent(this,MapsActivity.class);
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         mapIntent.putExtra("location",currentLocation);
+        startActivity(mapIntent);*/
+
+        Intent mapIntent = new Intent(this,PlaceAutocompleteActivity.class);
         startActivity(mapIntent);
     }
 }

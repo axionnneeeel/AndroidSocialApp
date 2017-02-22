@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SocialHelp</string>
     <string name="facebook_app_id">1498495766857208</string>
-    <string name="explorer_token">EAACEdEose0cBAJtMcvJbZBQ3LPSE1EbrvZAZAMbY36ENlcJZAmvG0vU7wbMCMHZBJFnOLZBmWC3OSJmij5GZANGEtF8EVNwW3nBIsxcdyZCmEpwPRFTAbiBma426K1EJl5v2ARiSL078wWWSzrOctaEZBKZAS7ydWqro2CfdY25AOsIUYu9SjhWc62y5WyT83BzZCEZD</string>
+    <string name="explorer_token">EAACEdEose0cBAH6ykRO3CO9r1ZAEUmHCKL6Arvt46ozTeca5Til5IdbmK10guhsoSRUPjiAxGtZBecZBXdIAiNYPfb6RKTZBmTvx38dKMbzwIorA1JWZBZAaS7r9UdDtK3Pqh53GbK0C8ZBUUu3pG7lZAVS8vP6lzbxUKSL58VHrODEWBNI64xNDJoHj09KbE9gZD</string>
     <string name="toolbar_title">Social events helper</string>
 </resources>

@@ -9,7 +9,7 @@ import java.io.Serializable;
  * Created by Razvan on 2/7/2017.
  */
 
-public class MainEventsModel implements Serializable,Parcelable {
+public class MainEventsModel implements Parcelable {
     private String eventTitle;
     private String eventCoverPhoto;
     private String eventTakingPlace;
@@ -25,6 +25,12 @@ public class MainEventsModel implements Serializable,Parcelable {
 
     public MainEventsModel(Parcel source){
         eventTitle = source.readString();
+        eventCoverPhoto = source.readString();
+        eventTakingPlace = source.readString();
+        eventDay = source.readString();
+        eventMonth = source.readString();
+        eventHour = source.readString();
+        eventDescription = source.readString();
         eventLatitude = source.readDouble();
         eventLongitude = source.readDouble();
     }
@@ -121,6 +127,12 @@ public class MainEventsModel implements Serializable,Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(eventTitle);
+        parcel.writeString(eventCoverPhoto);
+        parcel.writeString(eventTakingPlace);
+        parcel.writeString(eventDay);
+        parcel.writeString(eventMonth);
+        parcel.writeString(eventHour);
+        parcel.writeString(eventDescription);
         parcel.writeDouble(eventLatitude);
         parcel.writeDouble(eventLongitude);
     }
