@@ -89,49 +89,23 @@ public class MapsActivity extends AppCompatActivity
 
         putEventsMarker();
         updateLocationUI();
-        getDeviceLocation();
+        moveAndSaveDeviceLocation();
     }
 
-    private void getDeviceLocation() {
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            hasPermission = true;
+    private void moveAndSaveDeviceLocation() {
+        Location currentLocation = getIntent().getParcelableExtra("location");
+        lastLocation = currentLocation;
+
+        if (cameraPosition != null) {
+            googleMaps.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        } else if (lastLocation != null) {
+            googleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(lastLocation.getLatitude(),
+                            lastLocation.getLongitude()), DEFAULT_ZOOM));
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-
-        if (hasPermission) {
-            LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-
-            LocationListener locationListener = new LocationListener() {
-                public void onLocationChanged(Location location) {
-                    lastLocation = location;
-                    if (cameraPosition != null) {
-                        googleMaps.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                    } else if (lastLocation != null) {
-                        googleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(lastLocation.getLatitude(),
-                                        lastLocation.getLongitude()), DEFAULT_ZOOM));
-                    } else {
-                        Log.i("MAPS", "Current location is null. Using defaults.");
-                        googleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
-                        googleMaps.getUiSettings().setMyLocationButtonEnabled(false);
-                    }
-                }
-
-                public void onStatusChanged(String provider, int status,
-                                            Bundle extras) {
-                }
-
-                public void onProviderEnabled(String provider) {
-                }
-
-                public void onProviderDisabled(String provider) {
-                }
-            };
-
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 100, locationListener);
+            Log.i("MAPS", "Current location is null. Using defaults.");
+            googleMaps.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
+            googleMaps.getUiSettings().setMyLocationButtonEnabled(false);
         }
     }
 

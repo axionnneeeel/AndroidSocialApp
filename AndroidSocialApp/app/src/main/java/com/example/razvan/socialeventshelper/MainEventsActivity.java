@@ -71,6 +71,8 @@ public class MainEventsActivity extends AppCompatActivity {
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
 
+    private Location currentLocation;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +88,7 @@ public class MainEventsActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
+                currentLocation = location;
                 Geocoder gcd = new Geocoder(MainEventsActivity.this, Locale.getDefault());
                 List<Address> addresses = null;
                 try {
@@ -258,6 +261,7 @@ public class MainEventsActivity extends AppCompatActivity {
     void onFabClick(View view){
         Intent mapIntent = new Intent(this,MapsActivity.class);
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
+        mapIntent.putExtra("location",currentLocation);
         startActivity(mapIntent);
     }
 }
