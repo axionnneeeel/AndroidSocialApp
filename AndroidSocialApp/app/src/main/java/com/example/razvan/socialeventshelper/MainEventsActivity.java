@@ -79,7 +79,14 @@ public class MainEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
-        findLocationAndCallEvents();
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            String newCity = extras.getString("my_city");
+            initiateEvents(newCity);
+            toolbarTitle.setText("Events from "+newCity+" city");
+        }
+        else
+            findLocationAndCallEvents();
     }
 
     public void findLocationAndCallEvents() {

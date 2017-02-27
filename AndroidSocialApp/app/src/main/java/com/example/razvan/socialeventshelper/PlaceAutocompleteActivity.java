@@ -36,7 +36,7 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_places_autocomplete);
+        //setContentView(R.layout.activity_places_autocomplete);
 
         try {
             AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
@@ -48,9 +48,9 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
                             .build(this);
             startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
         } catch (GooglePlayServicesRepairableException e) {
-            // TODO: Handle the error.
+            Log.i("AUTOCOMPLETE",e.toString());
         } catch (GooglePlayServicesNotAvailableException e) {
-            // TODO: Handle the error.
+            Log.i("AUTOCOMPLETE",e.toString());
         }
     }
     @Override
@@ -58,11 +58,19 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 Place place = PlaceAutocomplete.getPlace(this, data);
+
+                Intent eventsIntent = new Intent(this,MainEventsActivity.class);
+                eventsIntent.putExtra("my_city",place.getName());
+                eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(eventsIntent);
+                finish();
             } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
                 Status status = PlaceAutocomplete.getStatus(this, data);
 
             } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
+                Intent eventsIntent = new Intent(this,MainEventsActivity.class);
+                startActivity(eventsIntent);
+                finish();
             }
         }
     }
