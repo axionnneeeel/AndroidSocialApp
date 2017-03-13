@@ -22,7 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
-import com.example.razvan.socialeventshelper.AugmentedReality.CameraViewActivity;
+import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
 import com.example.razvan.socialeventshelper.Utils.MapUtil;
@@ -273,7 +273,7 @@ public class MainEventsActivity extends AppCompatActivity {
         /*Intent mapIntent = new Intent(this,PlaceAutocompleteActivity.class);
         startActivity(mapIntent);*/
 
-        Intent mapIntent = new Intent(this,CameraViewActivity.class);
+        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
         startActivity(mapIntent);
     }
 }
