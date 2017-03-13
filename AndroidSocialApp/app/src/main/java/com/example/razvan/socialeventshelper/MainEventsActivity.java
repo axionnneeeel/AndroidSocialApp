@@ -9,7 +9,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -37,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -105,7 +103,7 @@ public class MainEventsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                String currentCity = addresses.get(0).getLocality();
+                String currentCity = addresses.get(0).getAdminArea();
                 initiateEvents(currentCity);
                 toolbarTitle.setText("Events from "+currentCity+" city");
             }

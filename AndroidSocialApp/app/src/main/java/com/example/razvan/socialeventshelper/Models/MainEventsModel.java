@@ -10,6 +10,7 @@ import java.io.Serializable;
  */
 
 public class MainEventsModel implements Parcelable {
+
     private String eventTitle;
     private String eventCoverPhoto;
     private String eventTakingPlace;

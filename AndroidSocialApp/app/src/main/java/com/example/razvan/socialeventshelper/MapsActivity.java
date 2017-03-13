@@ -31,8 +31,7 @@ import java.util.ArrayList;
  * Created by Razvan on 2/20/2017.
  */
 
-public class MapsActivity extends AppCompatActivity
-        implements OnMapReadyCallback,
+public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
@@ -48,7 +47,6 @@ public class MapsActivity extends AppCompatActivity
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +121,6 @@ public class MapsActivity extends AppCompatActivity
         }
         updateLocationUI();
     }
-
 
     private void updateLocationUI() {
         if (googleMaps == null) {

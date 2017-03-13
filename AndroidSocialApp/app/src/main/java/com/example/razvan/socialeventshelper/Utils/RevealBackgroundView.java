@@ -19,6 +19,7 @@ import android.view.animation.Interpolator;
  */
 
 public class RevealBackgroundView extends View {
+
     public static final int STATE_NOT_STARTED = 0;
     public static final int STATE_FILL_STARTED = 1;
     public static final int STATE_FINISHED = 2;
@@ -34,7 +35,6 @@ public class RevealBackgroundView extends View {
 
     private int startLocationX;
     private int startLocationY;
-
 
     private OnStateChangeListener onStateChangeListener;
 

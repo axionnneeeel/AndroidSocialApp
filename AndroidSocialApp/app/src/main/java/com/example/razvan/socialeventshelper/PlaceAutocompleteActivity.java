@@ -31,12 +31,12 @@ import com.google.android.gms.maps.model.LatLngBounds;
  */
 
 public class PlaceAutocompleteActivity extends AppCompatActivity {
+
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_places_autocomplete);
 
         try {
             AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
@@ -53,6 +53,7 @@ public class PlaceAutocompleteActivity extends AppCompatActivity {
             Log.i("AUTOCOMPLETE",e.toString());
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {

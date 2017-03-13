@@ -15,6 +15,7 @@ import butterknife.ButterKnife;
  */
 
 public class EventDetailsActivity extends AppCompatActivity {
+
     @BindView(R.id.event_name)
     TextView eventTitle;
 

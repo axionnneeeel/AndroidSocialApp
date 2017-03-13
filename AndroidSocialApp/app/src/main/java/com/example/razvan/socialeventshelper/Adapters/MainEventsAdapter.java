@@ -24,12 +24,9 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
     private final OnItemClickListener listener;
     private Context context;
 
-
     public interface OnItemClickListener {
         void onItemClick(MainEventsModel item);
     }
-
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView eventTitle;
@@ -49,7 +46,6 @@ public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.My
             eventHour = (TextView) view.findViewById(R.id.event_start_time);
         }
     }
-
 
     public MainEventsAdapter(List<MainEventsModel> eventsList,Context context,OnItemClickListener listener) {
         this.eventsList = eventsList;
