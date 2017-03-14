@@ -28,11 +28,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Razvan on 3/11/2017.
@@ -75,10 +81,13 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
     private TextPaint contentPaint;
 
     private Paint targetPaint;
+    private ArrayList<MainEventsModel> myEvents;
+    private List<Float> allEventsBearings = new ArrayList<>();
 
-    public OverlayEventsView(Context context) {
+    public OverlayEventsView(Context context,ArrayList<MainEventsModel> events) {
         super(context);
         this.context = context;
+        this.myEvents = events;
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         sensorsManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -142,7 +151,8 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        float curBearingToMW = 0.0f;
+        allEventsBearings.clear();
+        float bearingToEvent = 0.0f;
 
         StringBuilder text = new StringBuilder(accelerometerData).append("\n");
         text.append(compassData).append("\n");
@@ -155,9 +165,15 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
                             lastLocation.getLongitude(),
                             lastLocation.getAltitude())).append("\n");
 
-            curBearingToMW = lastLocation.bearingTo(mountWashington);
+            for(MainEventsModel eachEvent : myEvents) {
+                Location eventLocation = new Location("Location");
+                eventLocation.setLatitude(eachEvent.getEventLatitude());
+                eventLocation.setLongitude(eachEvent.getEventLongitude());
+                bearingToEvent = lastLocation.bearingTo(eventLocation);
+                allEventsBearings.add(bearingToEvent);
+            }
 
-            text.append(String.format("Bearing to MW: %.3f", curBearingToMW)).append("\n");
+            text.append(String.format("Bearing to MW: %.3f", bearingToEvent)).append("\n");
         }
 
         float rotation[] = new float[9];
@@ -180,33 +196,57 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
                 canvas.save();
                 canvas.rotate((float) (0.0f - Math.toDegrees(orientation[2])));
 
-                float dxAxePlacement = (float) ((canvas.getWidth() / horizontalViewAngle) * (Math.toDegrees(orientation[0]) - curBearingToMW));
-                float dyAxePlacement = (float) ((canvas.getHeight() / verticalViewAngle) * Math.toDegrees(orientation[1]));
 
-                canvas.translate(0.0f, 0.0f - dyAxePlacement);
-                canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight() / 2, canvas.getWidth() + canvas.getHeight(), canvas.getHeight() / 2, targetPaint);
+                for(int i=0 ; i<allEventsBearings.size() ; i++) {
+                    float dxAxePlacement = (float) ((canvas.getWidth() / horizontalViewAngle) * (Math.toDegrees(orientation[0]) - allEventsBearings.get(i)));
+                    float dyAxePlacement = (float) ((canvas.getHeight() / verticalViewAngle) * Math.toDegrees(orientation[1]));
 
-                canvas.translate(0.0f - dxAxePlacement, 0.0f);
-                canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
+                    canvas.translate(0.0f, 0.0f - dyAxePlacement);
+                    //canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight() / 2, canvas.getWidth() + canvas.getHeight(), canvas.getHeight() / 2, targetPaint);
 
-                final LayoutInflater factory = LayoutInflater.from(context);
-                final View textEntryView = factory.inflate(R.layout.augmented_reality_event_card, null);
-                CardView view = (CardView) textEntryView.findViewById(R.id.cardView);
-                view.setDrawingCacheEnabled(true);
-                view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                        MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-                view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+                    canvas.translate(0.0f - dxAxePlacement, 0.0f);
+                    //canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
 
-                view.buildDrawingCache();
-                Bitmap bma = Bitmap.createBitmap(view.getDrawingCache());
+                    final LayoutInflater factory = LayoutInflater.from(context);
+                    final View textEntryView = factory.inflate(R.layout.augmented_reality_event_card, null);
+                    CardView view = (CardView) textEntryView.findViewById(R.id.cardView);
 
-                float scale = context.getResources().getDisplayMetrics().density;
-                Bitmap bmaa = Bitmap.createScaledBitmap(bma,500,100 ,true);
-                view.setDrawingCacheEnabled(false);
-                canvas.drawBitmap(bmaa,canvas.getWidth() / 2, canvas.getHeight() / 2,targetPaint);
+                    TextView tww = (TextView) textEntryView.findViewById(R.id.event_title);
+                    tww.setText(myEvents.get(i).getEventTitle());
 
-                //canvas.save();
-                canvas.restore();
+                    TextView eventStreet = (TextView) textEntryView.findViewById(R.id.event_street);
+                    eventStreet.setText(myEvents.get(i).getEventTakingPlace());
+
+                    TextView eventDate = (TextView) textEntryView.findViewById(R.id.event_start_time);
+                    eventDate.setText(myEvents.get(i).getEventDay() + " " +myEvents.get(i).getEventMonth());
+
+                    Location eventLocation = new Location("Location");
+                    eventLocation.setLatitude(myEvents.get(i).getEventLatitude());
+                    eventLocation.setLongitude(myEvents.get(i).getEventLongitude());
+
+                    TextView distanceToLocation = (TextView) textEntryView.findViewById(R.id.distance_to);
+                    distanceToLocation.setText(Float.toString(lastLocation.distanceTo(eventLocation)/1000).substring(0,4)+" km");
+
+
+                    view.setDrawingCacheEnabled(true);
+                    view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                            MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                    view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+
+                    view.buildDrawingCache();
+                    Bitmap bma = Bitmap.createBitmap(view.getDrawingCache());
+
+                    float scale = context.getResources().getDisplayMetrics().density;
+                    Bitmap bmaa = Bitmap.createScaledBitmap(bma, Math.round(scale)*170, Math.round(scale)*80, true);
+                    view.setDrawingCacheEnabled(false);
+                    canvas.drawBitmap(bmaa, canvas.getWidth() / 2 - (85*Math.round(scale)), canvas.getHeight() / 2 - (40*Math.round(scale)), targetPaint);
+
+                    canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
+
+                    canvas.restore();
+                    canvas.save();
+                    break;
+                }
             }
         }
 

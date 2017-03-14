@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -274,6 +275,7 @@ public class MainEventsActivity extends AppCompatActivity {
         startActivity(mapIntent);*/
 
         Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         startActivity(mapIntent);
     }
 }
