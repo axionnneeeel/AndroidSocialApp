@@ -31,7 +31,7 @@ public class RevealBackgroundView extends View {
     private Paint fillPaint;
     private int currentRadius;
     private int targetRadius = -1;
-    ObjectAnimator revealAnimator;
+    private ObjectAnimator revealAnimator;
 
     private int startLocationX;
     private int startLocationY;

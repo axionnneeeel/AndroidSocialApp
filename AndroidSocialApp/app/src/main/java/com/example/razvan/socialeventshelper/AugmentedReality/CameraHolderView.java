@@ -22,10 +22,10 @@ public class CameraHolderView extends SurfaceView implements SurfaceHolder.Callb
 
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
 
-    Camera cameraInstance;
-    SurfaceHolder surfaceHolder;
-    Activity myActivity;
-    Context context;
+    private Camera cameraInstance;
+    private SurfaceHolder surfaceHolder;
+    private Activity myActivity;
+    private Context context;
 
     public CameraHolderView(Context context, Activity activity) {
         super(context);

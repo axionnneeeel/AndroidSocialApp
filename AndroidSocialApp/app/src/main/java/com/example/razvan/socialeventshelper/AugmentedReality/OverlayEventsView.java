@@ -50,19 +50,9 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
-    static final float ALPHA = 0.25f;
+    static final float ALPHA = 0.15f;
 
     private final Context context;
-
-    private final static Location mountWashington = new Location("manual");
-    static {
-        mountWashington.setLatitude(46.6383);
-        mountWashington.setLongitude(27.7292);
-    }
-
-    String accelerometerData = "Accelerometer Data";
-    String compassData = "Compass Data";
-    String gyroscopeData = "Gyro Data";
 
     private LocationManager locationManager = null;
     private SensorManager sensorsManager = null;
@@ -78,16 +68,33 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
     private Sensor compassSensor;
     private Sensor gyroscopeSensor;
 
-    private TextPaint contentPaint;
-
     private Paint targetPaint;
     private ArrayList<MainEventsModel> myEvents;
     private List<Float> allEventsBearings = new ArrayList<>();
+
+    private Location eventLocation = new Location("EVENT LOCATION");
+    private Location eventLocationCard = new Location("EVENT LOCATION CARD");
+
+    private float rotation[] = new float[9];
+    private float identity[] = new float[9];
+    private float cameraRotation[] = new float[9];
+    private float orientation[] = new float[3];
+    private float scale;
+
+    private CardView view ;
+    private TextView eventTitle;
+    private TextView eventStreet;
+    private TextView eventDate;
+    private TextView distanceToLocation;
+
 
     public OverlayEventsView(Context context,ArrayList<MainEventsModel> events) {
         super(context);
         this.context = context;
         this.myEvents = events;
+
+        scale = context.getResources().getDisplayMetrics().density;
+        inflateEventsView();
 
         locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         sensorsManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
@@ -106,11 +113,6 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
         verticalViewAngle = params.getVerticalViewAngle();
         horizontalViewAngle = params.getHorizontalViewAngle();
         camera.release();
-
-        contentPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
-        contentPaint.setTextAlign(Paint.Align.LEFT);
-        contentPaint.setTextSize(20);
-        contentPaint.setColor(Color.RED);
 
         targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         targetPaint.setColor(Color.GREEN);
@@ -136,6 +138,16 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
         locationManager.requestLocationUpdates(best, 50, 0, this);
     }
 
+    private void inflateEventsView(){
+        final LayoutInflater factory = LayoutInflater.from(context);
+        final View eventsView = factory.inflate(R.layout.augmented_reality_event_card, null);
+        view = (CardView) eventsView.findViewById(R.id.cardView);
+        eventTitle = (TextView) eventsView.findViewById(R.id.event_title);
+        eventStreet = (TextView) eventsView.findViewById(R.id.event_street);
+        eventDate = (TextView) eventsView.findViewById(R.id.event_start_time);
+        distanceToLocation = (TextView) eventsView.findViewById(R.id.distance_to);
+    }
+
     protected float[] lowPass( float[] input, float[] output ) {
         if ( output == null )
             return input;
@@ -152,109 +164,60 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
         super.onDraw(canvas);
 
         allEventsBearings.clear();
-        float bearingToEvent = 0.0f;
-
-        StringBuilder text = new StringBuilder(accelerometerData).append("\n");
-        text.append(compassData).append("\n");
-        text.append(gyroscopeData).append("\n");
 
         if (lastLocation != null) {
-            text.append(
-                    String.format("GPS = (%.3f, %.3f) @ (%.2f meters up)",
-                            lastLocation.getLatitude(),
-                            lastLocation.getLongitude(),
-                            lastLocation.getAltitude())).append("\n");
 
             for(MainEventsModel eachEvent : myEvents) {
-                Location eventLocation = new Location("Location");
                 eventLocation.setLatitude(eachEvent.getEventLatitude());
                 eventLocation.setLongitude(eachEvent.getEventLongitude());
-                bearingToEvent = lastLocation.bearingTo(eventLocation);
+                float bearingToEvent = lastLocation.bearingTo(eventLocation);
                 allEventsBearings.add(bearingToEvent);
             }
-
-            text.append(String.format("Bearing to MW: %.3f", bearingToEvent)).append("\n");
         }
 
-        float rotation[] = new float[9];
-        float identity[] = new float[9];
         if (lastAccelerometer != null && lastCompass != null) {
             boolean gotRotation = SensorManager.getRotationMatrix(rotation, identity, lastAccelerometer, lastCompass);
 
             if (gotRotation) {
-                float cameraRotation[] = new float[9];
                 SensorManager.remapCoordinateSystem(rotation, SensorManager.AXIS_X, SensorManager.AXIS_Z, cameraRotation);
-
-                float orientation[] = new float[3];
                 SensorManager.getOrientation(cameraRotation, orientation);
-
-                text.append(
-                        String.format("Orientation (%.3f, %.3f, %.3f)",
-                                Math.toDegrees(orientation[0]), Math.toDegrees(orientation[1]), Math.toDegrees(orientation[2])))
-                        .append("\n");
 
                 canvas.save();
                 canvas.rotate((float) (0.0f - Math.toDegrees(orientation[2])));
-
 
                 for(int i=0 ; i<allEventsBearings.size() ; i++) {
                     float dxAxePlacement = (float) ((canvas.getWidth() / horizontalViewAngle) * (Math.toDegrees(orientation[0]) - allEventsBearings.get(i)));
                     float dyAxePlacement = (float) ((canvas.getHeight() / verticalViewAngle) * Math.toDegrees(orientation[1]));
 
                     canvas.translate(0.0f, 0.0f - dyAxePlacement);
-                    //canvas.drawLine(0f - canvas.getHeight(), canvas.getHeight() / 2, canvas.getWidth() + canvas.getHeight(), canvas.getHeight() / 2, targetPaint);
-
                     canvas.translate(0.0f - dxAxePlacement, 0.0f);
-                    //canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
 
-                    final LayoutInflater factory = LayoutInflater.from(context);
-                    final View textEntryView = factory.inflate(R.layout.augmented_reality_event_card, null);
-                    CardView view = (CardView) textEntryView.findViewById(R.id.cardView);
-
-                    TextView tww = (TextView) textEntryView.findViewById(R.id.event_title);
-                    tww.setText(myEvents.get(i).getEventTitle());
-
-                    TextView eventStreet = (TextView) textEntryView.findViewById(R.id.event_street);
+                    eventTitle.setText(myEvents.get(i).getEventTitle());
                     eventStreet.setText(myEvents.get(i).getEventTakingPlace());
-
-                    TextView eventDate = (TextView) textEntryView.findViewById(R.id.event_start_time);
                     eventDate.setText(myEvents.get(i).getEventDay() + " " +myEvents.get(i).getEventMonth());
-
-                    Location eventLocation = new Location("Location");
-                    eventLocation.setLatitude(myEvents.get(i).getEventLatitude());
-                    eventLocation.setLongitude(myEvents.get(i).getEventLongitude());
-
-                    TextView distanceToLocation = (TextView) textEntryView.findViewById(R.id.distance_to);
-                    distanceToLocation.setText(Float.toString(lastLocation.distanceTo(eventLocation)/1000).substring(0,4)+" km");
-
+                    eventLocationCard.setLatitude(myEvents.get(i).getEventLatitude());
+                    eventLocationCard.setLongitude(myEvents.get(i).getEventLongitude());
+                    distanceToLocation.setText(Float.toString(lastLocation.distanceTo(eventLocationCard)/1000).substring(0,4)+" km");
 
                     view.setDrawingCacheEnabled(true);
                     view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                             MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
                     view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-
                     view.buildDrawingCache();
-                    Bitmap bma = Bitmap.createBitmap(view.getDrawingCache());
 
-                    float scale = context.getResources().getDisplayMetrics().density;
-                    Bitmap bmaa = Bitmap.createScaledBitmap(bma, Math.round(scale)*170, Math.round(scale)*80, true);
-                    view.setDrawingCacheEnabled(false);
-                    canvas.drawBitmap(bmaa, canvas.getWidth() / 2 - (85*Math.round(scale)), canvas.getHeight() / 2 - (40*Math.round(scale)), targetPaint);
 
+                    Bitmap eventCardBitmap = Bitmap.createScaledBitmap(view.getDrawingCache(), Math.round(scale)*170, Math.round(scale)*80, true);
+                    canvas.drawBitmap(eventCardBitmap, canvas.getWidth() / 2 - (85*Math.round(scale)), canvas.getHeight() / 2 - (40*Math.round(scale)), targetPaint);
                     canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
 
                     canvas.restore();
                     canvas.save();
-                    break;
                 }
             }
         }
 
         canvas.save();
         canvas.translate(15.0f, 15.0f);
-        StaticLayout textBox = new StaticLayout(text.toString(), contentPaint,
-                480, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, true);
-        textBox.draw(canvas);
         canvas.restore();
     }
 

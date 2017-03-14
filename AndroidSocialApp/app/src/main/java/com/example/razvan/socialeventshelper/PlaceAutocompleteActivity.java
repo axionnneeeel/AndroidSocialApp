@@ -32,7 +32,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 
 public class PlaceAutocompleteActivity extends AppCompatActivity {
 
-    int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    private int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
