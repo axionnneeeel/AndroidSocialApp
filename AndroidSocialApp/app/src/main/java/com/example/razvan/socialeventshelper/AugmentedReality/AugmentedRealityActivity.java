@@ -1,7 +1,11 @@
 package com.example.razvan.socialeventshelper.AugmentedReality;
 
+
+import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
@@ -22,6 +26,9 @@ public class AugmentedRealityActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.augmented_reality);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
+        findViewById(R.id.appBar).bringToFront();
 
         ArrayList<MainEventsModel> eventsList = getIntent().getParcelableArrayListExtra("all_events");
 

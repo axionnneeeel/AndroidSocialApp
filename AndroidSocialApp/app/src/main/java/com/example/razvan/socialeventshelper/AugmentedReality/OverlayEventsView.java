@@ -212,6 +212,7 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
 
                     canvas.restore();
                     canvas.save();
+                    break;
                 }
             }
         }
