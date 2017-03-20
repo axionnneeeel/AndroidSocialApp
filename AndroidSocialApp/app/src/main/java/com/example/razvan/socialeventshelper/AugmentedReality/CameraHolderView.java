@@ -1,11 +1,8 @@
 package com.example.razvan.socialeventshelper.AugmentedReality;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.support.v4.app.ActivityCompat;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -19,8 +16,6 @@ import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class CameraHolderView extends SurfaceView implements SurfaceHolder.Callback {
-
-    private static final int PERMISSIONS_REQUEST_ACCESS_CAMERA = 1;
 
     private Camera cameraInstance;
     private SurfaceHolder surfaceHolder;

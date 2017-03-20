@@ -6,7 +6,6 @@ package com.example.razvan.socialeventshelper.Adapters;
 
 import java.util.HashMap;
 import java.util.List;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -17,24 +16,22 @@ import android.widget.TextView;
 
 import com.example.razvan.socialeventshelper.R;
 
-public class ExpandableListAdapter extends BaseExpandableListAdapter {
+public class AugmentedRealityExpandableListAdapter extends BaseExpandableListAdapter {
 
-    private Context _context;
-    private List<String> _listDataHeader; // header titles
-    // child data in format of header title, child title
-    private HashMap<String, List<String>> _listDataChild;
+    private Context context;
+    private List<String> listTitles;
+    private HashMap<String, List<String>> listChild;
 
-    public ExpandableListAdapter(Context context, List<String> listDataHeader,
-                                 HashMap<String, List<String>> listChildData) {
-        this._context = context;
-        this._listDataHeader = listDataHeader;
-        this._listDataChild = listChildData;
+    public AugmentedRealityExpandableListAdapter(Context context, List<String> listDataHeader,
+                                                 HashMap<String, List<String>> listChildData) {
+        this.context = context;
+        this.listTitles = listDataHeader;
+        this.listChild = listChildData;
     }
 
     @Override
     public Object getChild(int groupPosition, int childPosititon) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .get(childPosititon);
+        return this.listChild.get(this.listTitles.get(groupPosition)).get(childPosititon);
     }
 
     @Override
@@ -49,32 +46,30 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         final String childText = (String) getChild(groupPosition, childPosition);
 
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_item, null);
+            convertView = layoutInflater.inflate(R.layout.augmented_reality_items_titles, null);
         }
 
-        TextView txtListChild = (TextView) convertView
-                .findViewById(R.id.lblListItem);
-
+        TextView txtListChild = (TextView) convertView.findViewById(R.id.items_title);
         txtListChild.setText(childText);
+
         return convertView;
     }
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return this._listDataChild.get(this._listDataHeader.get(groupPosition))
-                .size();
+        return this.listChild.get(this.listTitles.get(groupPosition)).size();
     }
 
     @Override
     public Object getGroup(int groupPosition) {
-        return this._listDataHeader.get(groupPosition);
+        return this.listTitles.get(groupPosition);
     }
 
     @Override
     public int getGroupCount() {
-        return this._listDataHeader.size();
+        return this.listTitles.size();
     }
 
     @Override
@@ -87,13 +82,12 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
                              View convertView, ViewGroup parent) {
         String headerTitle = (String) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater infalInflater = (LayoutInflater) this._context
+            LayoutInflater layoutInflater = (LayoutInflater) this.context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = infalInflater.inflate(R.layout.list_group, null);
+            convertView = layoutInflater.inflate(R.layout.augmented_reality_group_titles, null);
         }
 
-        TextView lblListHeader = (TextView) convertView
-                .findViewById(R.id.lblListHeader);
+        TextView lblListHeader = (TextView) convertView.findViewById(R.id.group_titles);
         lblListHeader.setTypeface(null, Typeface.BOLD);
         lblListHeader.setText(headerTitle);
 

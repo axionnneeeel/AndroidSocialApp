@@ -35,7 +35,6 @@ import com.facebook.HttpMethod;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +42,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -71,8 +69,6 @@ public class MainEventsActivity extends AppCompatActivity {
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
 
-    private Location currentLocation;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +91,6 @@ public class MainEventsActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
-                currentLocation = location;
                 Geocoder gcd = new Geocoder(MainEventsActivity.this, Locale.getDefault());
                 List<Address> addresses = null;
                 try {

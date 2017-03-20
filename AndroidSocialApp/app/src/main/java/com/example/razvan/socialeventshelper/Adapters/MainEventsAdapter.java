@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.squareup.picasso.Picasso;
-
-
 import java.util.List;
 
 public class MainEventsAdapter extends RecyclerView.Adapter<MainEventsAdapter.MyViewHolder> {

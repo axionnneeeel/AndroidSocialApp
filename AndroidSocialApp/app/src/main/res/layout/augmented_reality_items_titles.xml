@@ -14,7 +14,7 @@
         android:checked="true"/>
 
     <TextView
-        android:id="@+id/lblListItem"
+        android:id="@+id/items_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="17sp"

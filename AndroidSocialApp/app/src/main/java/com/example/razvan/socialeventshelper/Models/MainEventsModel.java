@@ -3,8 +3,6 @@ package com.example.razvan.socialeventshelper.Models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.io.Serializable;
-
 /**
  * Created by Razvan on 2/7/2017.
  */
