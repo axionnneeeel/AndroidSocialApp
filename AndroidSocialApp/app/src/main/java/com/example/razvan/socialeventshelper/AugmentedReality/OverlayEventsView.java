@@ -106,6 +106,10 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
 
     }
 
+    public void modifyEvents(ArrayList<MainEventsModel> newEvents){
+        myEvents = newEvents;
+    }
+
     private void registerSensors() {
         sensorsManager.registerListener(this, accelerometerSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorsManager.registerListener(this, compassSensor, SensorManager.SENSOR_DELAY_NORMAL);
