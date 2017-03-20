@@ -18,24 +18,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
-import android.text.Layout;
-import android.text.StaticLayout;
-import android.text.TextPaint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,16 +115,12 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
     }
 
     private void registerGPS() {
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.NO_REQUIREMENT);
-        criteria.setPowerRequirement(Criteria.NO_REQUIREMENT);
-
-        String best = locationManager.getBestProvider(criteria, true);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity)context, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-        locationManager.requestLocationUpdates(best, 50, 0, this);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 50, 0, this);
+
     }
 
     private void inflateEventsView(){
@@ -212,7 +197,6 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
 
                     canvas.restore();
                     canvas.save();
-                    break;
                 }
             }
         }

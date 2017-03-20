@@ -38,8 +38,6 @@ public class CameraHolderView extends SurfaceView implements SurfaceHolder.Callb
     }
 
     public void surfaceCreated(SurfaceHolder holder) {
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED )
-            ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_ACCESS_CAMERA);
         cameraInstance = Camera.open();
 
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
