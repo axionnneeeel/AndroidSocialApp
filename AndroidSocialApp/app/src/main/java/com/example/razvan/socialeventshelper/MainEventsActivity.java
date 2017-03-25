@@ -1,5 +1,6 @@
 package com.example.razvan.socialeventshelper;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +21,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
@@ -63,17 +65,25 @@ public class MainEventsActivity extends AppCompatActivity {
 
     private final long TEN_DAYS_IN_SECONDS = 864000;
     private final long LOCATION_REFRESH_TIME = 0;
-    private final long LOCATION_REFRESH_DISTANCE = 10000;
+    private final long LOCATION_REFRESH_DISTANCE = 3000;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
 
     private MainEventsAdapter eventsAdapter;
     private List<MainEventsModel> eventsList = new ArrayList<>();
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
+
+        dialog=new ProgressDialog(this);
+        dialog.setMessage("Data fetching..");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
+
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
@@ -83,6 +93,8 @@ public class MainEventsActivity extends AppCompatActivity {
         }
         else
             findLocationAndCallEvents();
+
+
     }
 
     public void findLocationAndCallEvents() {
@@ -91,6 +103,7 @@ public class MainEventsActivity extends AppCompatActivity {
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
 
+                eventsList.clear();
                 Geocoder gcd = new Geocoder(MainEventsActivity.this, Locale.getDefault());
                 List<Address> addresses = null;
                 try {
@@ -118,6 +131,7 @@ public class MainEventsActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 
+        SocialEventsApplication.getInstance().registerGPS();
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener);
     }
 
@@ -185,7 +199,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
             for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
-                if (currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\""))
+                if (currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\"") && currentObject.toString().contains("\"location\""))
                     eventsIdsTimeSorted.put(currentObject.getString("id"), currentObject.getString("start_time"));
             }
 
@@ -252,8 +266,10 @@ public class MainEventsActivity extends AppCompatActivity {
                 MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription, Double.parseDouble(evLat), Double.parseDouble(evLong));
                 eventsList.add(currentEvent);
             }
+            SocialEventsApplication.getInstance().updateEventsList(eventsList);
             eventsAdapter.notifyDataSetChanged();
             refreshLayout.setRefreshing(false);
+            dialog.dismiss();
         } catch (JSONException e) {
             e.printStackTrace();
         }
