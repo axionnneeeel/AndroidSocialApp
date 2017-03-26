@@ -275,7 +275,7 @@ public class MainEventsActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.fab)
+    /*@OnClick(R.id.fab)
     void onFabClick(View view){
         /*Intent mapIntent = new Intent(this,MapsActivity.class);
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
@@ -283,10 +283,10 @@ public class MainEventsActivity extends AppCompatActivity {
         startActivity(mapIntent);*/
 
         /*Intent mapIntent = new Intent(this,PlaceAutocompleteActivity.class);
-        startActivity(mapIntent);*/
+        startActivity(mapIntent);
 
         Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         startActivity(mapIntent);
-    }
+    }*/
 }

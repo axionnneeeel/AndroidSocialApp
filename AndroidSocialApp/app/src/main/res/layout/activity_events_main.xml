@@ -28,14 +28,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/recycler_view_events_main"/>
+    <include layout="@layout/recycler_view_events_main" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+    <include layout="@layout/buttom_menu"/>
 
 </android.support.design.widget.CoordinatorLayout>
