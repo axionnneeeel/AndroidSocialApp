@@ -3,6 +3,7 @@
     <color name="colorPrimary">#9e683b</color>
     <color name="colorPrimaryDark">#8f623b</color>
     <color name="colorAccent">#9e683b</color>
+    <color name="colorPrimaryTransp">#b39e683b</color>
     <color name="white">#FFFFFF</color>
     <color name="transparent">#00ffffff</color>
     <color name="statusTransBlack">#20000000</color>

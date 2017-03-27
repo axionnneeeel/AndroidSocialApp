@@ -19,11 +19,25 @@
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
             <TextView
+                android:id="@+id/toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/toolbar_title"
                 android:textSize="@dimen/title_size"
                 android:textColor="@color/white"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <ImageView
+                    android:id="@+id/ag_option"
+                    android:layout_width="@dimen/imageview_width"
+                    android:layout_height="@dimen/imageview_height"
+                    android:src="@drawable/ic_visibility_white_24dp"
+                    android:paddingEnd="10dp"
+                    />
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
@@ -33,7 +47,10 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="52dp"/>
+        android:layout_marginTop="52dp"
+        android:layout_marginBottom="@dimen/padding_bottom_menu"/>
+
+    <include layout="@layout/buttom_menu"/>
 
 </android.support.design.widget.CoordinatorLayout>
 

@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <android.support.v7.widget.CardView
-    android:layout_width="match_parent"
-    android:layout_height="55dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="55dp"
     app:cardCornerRadius="5dp"
     android:layout_gravity="bottom"
     >
 
-
     <LinearLayout
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/menu_height"
         android:background="@color/colorPrimary"
         android:layout_weight="1"
         android:baselineAligned="false">
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/menu_height"
             app:cardCornerRadius="5dp"
             android:layout_weight="0.25"
             >
@@ -30,23 +30,24 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="#b39e683b">
+                android:background="@color/colorPrimary"
+                android:id="@+id/events_option">
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="35dp"
+                    android:layout_width="@dimen/imageview_width"
+                    android:layout_height="@dimen/imageview_height"
                     android:src="@drawable/ic_event_note_grey_24dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Events"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="14sp"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/menu_height"
             app:cardCornerRadius="5dp"
             android:layout_weight="0.25"
             >
@@ -57,23 +58,24 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:id="@+id/places_option">
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="35dp"
+                    android:layout_width="@dimen/imageview_width"
+                    android:layout_height="@dimen/imageview_height"
                     android:src="@drawable/ic_local_activity_grey_24dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Places"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="14sp"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/menu_height"
             app:cardCornerRadius="5dp"
             android:layout_weight="0.25"
             >
@@ -84,10 +86,11 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:id="@+id/map_option">
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="35dp"
+                    android:layout_width="@dimen/imageview_width"
+                    android:layout_height="@dimen/imageview_height"
                     android:src="@drawable/ic_place_grey_24dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -100,7 +103,7 @@
 
         <android.support.v7.widget.CardView
             android:layout_width="0dp"
-            android:layout_height="55dp"
+            android:layout_height="@dimen/menu_height"
             app:cardCornerRadius="5dp"
             android:layout_weight="0.25"
             >
@@ -111,16 +114,17 @@
                 android:orientation="vertical"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:id="@+id/account_option">
                 <ImageView
-                    android:layout_width="45dp"
-                    android:layout_height="35dp"
+                    android:layout_width="@dimen/imageview_width"
+                    android:layout_height="@dimen/imageview_height"
                     android:src="@drawable/ic_person_grey_24dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Account"
-                    android:textColor="#FFFFFF"
+                    android:textColor="@color/white"
                     android:textSize="14sp"/>
             </LinearLayout>
         </android.support.v7.widget.CardView>

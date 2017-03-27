@@ -1,13 +1,23 @@
 package com.example.razvan.socialeventshelper;
 
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -16,10 +26,16 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -30,22 +46,36 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
+    @BindView(R.id.map_option)
+    LinearLayout mapOption;
+
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+
+
     private GoogleMap googleMaps;
     private CameraPosition cameraPosition;
     private GoogleApiClient googleClient;
 
-    private boolean hasPermission;
     private Location lastLocation;
     private final LatLng defaultLocation = new LatLng(47.151726, 27.587914);
 
-    private static final int DEFAULT_ZOOM = 10;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    private static final int DEFAULT_ZOOM = 12;
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    private ProgressDialog dialog;
+
+    private ArrayList<MainEventsModel> eventsList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        dialog=new ProgressDialog(this);
+        dialog.setMessage("Putting events on the map...");
+        dialog.setCancelable(false);
+        dialog.setInverseBackgroundForced(false);
+        dialog.show();
 
         if (savedInstanceState != null) {
             lastLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -53,6 +83,13 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         setContentView(R.layout.activity_maps);
+        ButterKnife.bind(this);
+
+        String currentCityCountry = getIntent().getStringExtra("city_country");
+        toolbarTitle.setText(currentCityCountry);
+
+        mapOption.setBackgroundColor(ContextCompat.getColor(MapsActivity.this, R.color.colorPrimaryTransp));
+
         googleClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
                 .addConnectionCallbacks(this)
@@ -81,13 +118,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         googleMaps = map;
 
         putEventsMarker();
-        updateLocationUI();
         moveAndSaveDeviceLocation();
+        updateLocationUI();
+
+        dialog.dismiss();
     }
 
     private void moveAndSaveDeviceLocation() {
         Location currentLocation = getIntent().getParcelableExtra("location");
         lastLocation = currentLocation;
+
+        LatLng myCoord = new LatLng(lastLocation.getLatitude(),lastLocation.getLongitude());
+        googleMaps.addMarker(new MarkerOptions().position(myCoord).title("You are here").icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
 
         if (cameraPosition != null) {
             googleMaps.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -102,46 +144,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
-                                           @NonNull int[] grantResults) {
-        hasPermission = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    hasPermission = true;
-                }
-            }
-        }
-        updateLocationUI();
-    }
-
     private void updateLocationUI() {
-        if (googleMaps == null) {
-            return;
-        }
 
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            hasPermission = true;
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-
-        if (hasPermission) {
-            googleMaps.setMyLocationEnabled(true);
-            googleMaps.getUiSettings().setMyLocationButtonEnabled(false);
-        } else {
-            googleMaps.setMyLocationEnabled(false);
-            googleMaps.getUiSettings().setMyLocationButtonEnabled(false);
-            lastLocation = null;
-        }
     }
 
     public void putEventsMarker(){
-        ArrayList<MainEventsModel> eventsList = getIntent().getParcelableArrayListExtra("all_events");
+        eventsList = getIntent().getParcelableArrayListExtra("all_events");
 
         for(MainEventsModel currentEvent : eventsList) {
             LatLng currentEventCoord = new LatLng(currentEvent.getEventLatitude(),currentEvent.getEventLongitude());
@@ -159,4 +167,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("MAPS", "Play services connection suspended");
     }
 
+
+    @OnClick(R.id.events_option)
+    void onEventsOptionClick(View view){
+        Intent eventsIntent = new Intent(this,MainEventsActivity.class);
+        eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(eventsIntent);
+        finish();
+    }
+
+    @OnClick(R.id.ag_option)
+    void onAgOptionClick(View view){
+        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_events", eventsList);
+        startActivity(mapIntent);
+    }
 }

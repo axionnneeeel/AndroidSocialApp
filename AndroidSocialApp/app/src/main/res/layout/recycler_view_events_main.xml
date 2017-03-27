@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/padding_top_menu"
-    android:layout_marginBottom="55dp">
+    android:layout_marginBottom="@dimen/padding_bottom_menu">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_refresh_layout"

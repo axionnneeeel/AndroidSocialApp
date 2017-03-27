@@ -5,4 +5,8 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="title_size">18sp</dimen>
     <dimen name="padding_top_menu">57dp</dimen>
+    <dimen name="menu_height">55dp</dimen>
+    <dimen name="imageview_width">45dp</dimen>
+    <dimen name="imageview_height">35dp</dimen>
+    <dimen name="padding_bottom_menu">55dp</dimen>
 </resources>

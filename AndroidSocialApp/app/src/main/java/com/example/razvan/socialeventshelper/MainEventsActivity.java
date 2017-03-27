@@ -16,11 +16,14 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +66,9 @@ public class MainEventsActivity extends AppCompatActivity {
     @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
 
+    @BindView(R.id.events_option)
+    LinearLayout eventsOption;
+
     private final long TEN_DAYS_IN_SECONDS = 864000;
     private final long LOCATION_REFRESH_TIME = 0;
     private final long LOCATION_REFRESH_DISTANCE = 3000;
@@ -72,14 +78,21 @@ public class MainEventsActivity extends AppCompatActivity {
     private List<MainEventsModel> eventsList = new ArrayList<>();
     private ProgressDialog dialog;
 
+    private Location currentLocation;
+
+    private String currentCity;
+    private String currentCountry;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_events_main);
         ButterKnife.bind(this);
 
+        eventsOption.setBackgroundColor(ContextCompat.getColor(MainEventsActivity.this,R.color.colorPrimaryTransp));
+
         dialog=new ProgressDialog(this);
-        dialog.setMessage("Data fetching..");
+        dialog.setMessage("Events fetching..");
         dialog.setCancelable(false);
         dialog.setInverseBackgroundForced(false);
         dialog.show();
@@ -89,7 +102,7 @@ public class MainEventsActivity extends AppCompatActivity {
         if(extras != null){
             String newCity = extras.getString("my_city");
             initiateEvents(newCity);
-            toolbarTitle.setText("Events from "+newCity+" city");
+            toolbarTitle.setText(newCity);
         }
         else
             findLocationAndCallEvents();
@@ -102,6 +115,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
+                currentLocation = location;
 
                 eventsList.clear();
                 Geocoder gcd = new Geocoder(MainEventsActivity.this, Locale.getDefault());
@@ -112,9 +126,10 @@ public class MainEventsActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                String currentCity = addresses.get(0).getAdminArea();
+                currentCity = addresses.get(0).getAdminArea();
+                currentCountry = addresses.get(0).getCountryName();
                 initiateEvents(currentCity);
-                toolbarTitle.setText("Events from "+currentCity+" city");
+                toolbarTitle.setText(currentCity+", "+currentCountry);
             }
 
             public void onStatusChanged(String provider, int status,
@@ -289,4 +304,22 @@ public class MainEventsActivity extends AppCompatActivity {
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         startActivity(mapIntent);
     }*/
+
+    @OnClick(R.id.map_option)
+    void onMapOptionClick(View view){
+        Intent mapIntent = new Intent(this,MapsActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
+        mapIntent.putExtra("location",currentLocation);
+        mapIntent.putExtra("city_country",currentCity+", "+currentCountry);
+        mapIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(mapIntent);
+        finish();
+    }
+
+    @OnClick(R.id.ag_option)
+    void onAgOptionClick(View view){
+        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
+        startActivity(mapIntent);
+    }
 }
