@@ -22,7 +22,11 @@ import android.widget.Toast;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.facebook.appevents.AppEventsLogger;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -52,6 +56,7 @@ public class SocialEventsApplication extends Application {
     private NotificationCompat.Builder mBuilder;
     private long times[];
     private final Long THIRTY_MINUTES_IN_MILI = 1800000L;
+    private Socket serverSocket;
 
 
     @Override
@@ -63,6 +68,8 @@ public class SocialEventsApplication extends Application {
         locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+
+        connectToServer();
     }
 
     public void registerGPS() {
@@ -108,5 +115,22 @@ public class SocialEventsApplication extends Application {
         }
 
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+    }
+
+    private void connectToServer(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    serverSocket = new Socket("192.168.2.103", 8080);
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    public Socket getServerSocket(){
+        return serverSocket;
     }
 }

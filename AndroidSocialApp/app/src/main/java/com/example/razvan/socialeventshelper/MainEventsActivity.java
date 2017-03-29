@@ -290,21 +290,6 @@ public class MainEventsActivity extends AppCompatActivity {
         }
     }
 
-    /*@OnClick(R.id.fab)
-    void onFabClick(View view){
-        /*Intent mapIntent = new Intent(this,MapsActivity.class);
-        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
-        mapIntent.putExtra("location",currentLocation);
-        startActivity(mapIntent);*/
-
-        /*Intent mapIntent = new Intent(this,PlaceAutocompleteActivity.class);
-        startActivity(mapIntent);
-
-        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
-        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
-        startActivity(mapIntent);
-    }*/
-
     @OnClick(R.id.map_option)
     void onMapOptionClick(View view){
         Intent mapIntent = new Intent(this,MapsActivity.class);
