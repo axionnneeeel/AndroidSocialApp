@@ -122,9 +122,9 @@ public class SocialEventsApplication extends Application {
             @Override
             public void run() {
                 try {
-                    serverSocket = new Socket("192.168.2.103", 8080);
+                    serverSocket = new Socket("192.168.2.101", 8080);
                 }catch(IOException e){
-                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Connection to server failed. Try to restart the application.",Toast.LENGTH_LONG).show();
                 }
             }
         }).start();
@@ -133,4 +133,5 @@ public class SocialEventsApplication extends Application {
     public Socket getServerSocket(){
         return serverSocket;
     }
+
 }
