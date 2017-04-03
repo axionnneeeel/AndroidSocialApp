@@ -47,24 +47,35 @@ public class RegisterActivity extends AppCompatActivity {
         String passwordString = this.password.getText().toString();
         String emailString = this.email.getText().toString();
 
-        Integer registerValue = sendCreditentialsAndReceiveConfirmation(usernameString,passwordString,emailString);
-
-        if(registerValue == 1){
-
-            Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
-            loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            loginIntent.putExtra("register",1);
-            startActivity(loginIntent);
-            finish();
-        }
-        else{
+        if(usernameString.length() < 5 && passwordString.length() < 6 && emailString.length() < 5 && !emailString.contains("@") && !emailString.contains(".")){
             AlertDialog.Builder alertDialog  = new AlertDialog.Builder(RegisterActivity.this);
 
-            alertDialog.setMessage("Invalid username/password or already exists. Please try again with other credentials.");
+            alertDialog.setMessage("Invalid username/password/e-mail. Please try again with new ones.");
             alertDialog.setTitle("Error...");
             alertDialog.setPositiveButton("OK", null);
             alertDialog.setCancelable(true);
             alertDialog.create().show();
+        }
+        else {
+
+            Integer registerValue = sendCreditentialsAndReceiveConfirmation(usernameString, passwordString, emailString);
+
+            if (registerValue == 1) {
+
+                Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);
+                loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                loginIntent.putExtra("register", 1);
+                startActivity(loginIntent);
+                finish();
+            } else {
+                AlertDialog.Builder alertDialog = new AlertDialog.Builder(RegisterActivity.this);
+
+                alertDialog.setMessage("This user already exists in our database. Please try again with other credentials.");
+                alertDialog.setTitle("Error...");
+                alertDialog.setPositiveButton("OK", null);
+                alertDialog.setCancelable(true);
+                alertDialog.create().show();
+            }
         }
     }
 
