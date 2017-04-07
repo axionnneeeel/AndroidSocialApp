@@ -255,31 +255,33 @@ public class MainEventsActivity extends AppCompatActivity {
                 String eachEventDataString = resultJSONObj.getString(eachEvent.getKey());
 
                 JSONObject eachEventDataJSON = new JSONObject(eachEventDataString);
-                String eventTitle = eachEventDataJSON.getString("name");
+                if(eachEventDataJSON.toString().contains("\"cover\"")) {
+                    String eventTitle = eachEventDataJSON.getString("name");
 
-                String takingPlaceString = eachEventDataJSON.getString("place");
-                JSONObject takingPlaceJSON = new JSONObject(takingPlaceString);
-                String takingPlace = takingPlaceJSON.getString("name");
+                    String takingPlaceString = eachEventDataJSON.getString("place");
+                    JSONObject takingPlaceJSON = new JSONObject(takingPlaceString);
+                    String takingPlace = takingPlaceJSON.getString("name");
 
-                String evLatLongString = takingPlaceJSON.getString("location");
-                JSONObject evLatLongJSON = new JSONObject(evLatLongString);
-                String evLat = evLatLongJSON.getString("latitude");
-                String evLong = evLatLongJSON.getString("longitude");
+                    String evLatLongString = takingPlaceJSON.getString("location");
+                    JSONObject evLatLongJSON = new JSONObject(evLatLongString);
+                    String evLat = evLatLongJSON.getString("latitude");
+                    String evLong = evLatLongJSON.getString("longitude");
 
-                String coverPhotoString = eachEventDataJSON.getString("cover");
-                JSONObject coverPhotoJSON = new JSONObject(coverPhotoString);
-                String coverPhoto = coverPhotoJSON.getString("source");
+                    String coverPhotoString = eachEventDataJSON.getString("cover");
+                    JSONObject coverPhotoJSON = new JSONObject(coverPhotoString);
+                    String coverPhoto = coverPhotoJSON.getString("source");
 
-                String eventTime = eachEventDataJSON.getString("start_time");
-                String[] splittedTime = eventTime.split("-");
-                String eventDay = splittedTime[2].substring(0, 2);
-                String eventMonth = GeneralUtils.getMonthNameFromNumber(splittedTime[1]);
-                String eventHour = splittedTime[2].substring(3, 8);
+                    String eventTime = eachEventDataJSON.getString("start_time");
+                    String[] splittedTime = eventTime.split("-");
+                    String eventDay = splittedTime[2].substring(0, 2);
+                    String eventMonth = GeneralUtils.getMonthNameFromNumber(splittedTime[1]);
+                    String eventHour = splittedTime[2].substring(3, 8);
 
-                String eventDescription = eachEventDataJSON.getString("description");
+                    String eventDescription = eachEventDataJSON.getString("description");
 
-                MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription, Double.parseDouble(evLat), Double.parseDouble(evLong));
-                eventsList.add(currentEvent);
+                    MainEventsModel currentEvent = new MainEventsModel(eventTitle, coverPhoto, takingPlace, eventDay, eventMonth, eventHour, eventDescription, Double.parseDouble(evLat), Double.parseDouble(evLong));
+                    eventsList.add(currentEvent);
+                }
             }
             SocialEventsApplication.getInstance().updateEventsList(eventsList);
             eventsAdapter.notifyDataSetChanged();
@@ -298,6 +300,15 @@ public class MainEventsActivity extends AppCompatActivity {
         mapIntent.putExtra("city_country",currentCity+", "+currentCountry);
         mapIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mapIntent);
+        finish();
+    }
+
+    @OnClick(R.id.places_option)
+    void onPlacesOptionClick(View view){
+        Intent placesIntent = new Intent(this,PlacesAdviserActivity.class);
+        placesIntent.putExtra("location",currentLocation);
+        placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(placesIntent);
         finish();
     }
 

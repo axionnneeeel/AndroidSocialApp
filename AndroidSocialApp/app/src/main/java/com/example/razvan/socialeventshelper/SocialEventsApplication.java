@@ -45,7 +45,6 @@ public class SocialEventsApplication extends Application {
     }
 
     public void updateEventsList(List<MainEventsModel> eventListt) {
-        times = new long[100];
         this.eventsList = eventListt;
     }
 
@@ -54,7 +53,7 @@ public class SocialEventsApplication extends Application {
     private NotificationManager notificationManager;
     private Uri soundUri;
     private NotificationCompat.Builder mBuilder;
-    private long times[];
+    private long times[] = new long[100] ;
     private final Long THIRTY_MINUTES_IN_MILI = 1800000L;
     private Socket serverSocket;
 
@@ -122,7 +121,7 @@ public class SocialEventsApplication extends Application {
             @Override
             public void run() {
                 try {
-                    serverSocket = new Socket("192.168.2.101", 8080);
+                    serverSocket = new Socket("192.168.0.101", 8080);
                 }catch(IOException e){
                     Toast.makeText(getApplicationContext(),"Connection to server failed. Try to restart the application.",Toast.LENGTH_LONG).show();
                 }
