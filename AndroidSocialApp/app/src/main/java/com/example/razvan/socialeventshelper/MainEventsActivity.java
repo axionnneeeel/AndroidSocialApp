@@ -307,6 +307,7 @@ public class MainEventsActivity extends AppCompatActivity {
     void onPlacesOptionClick(View view){
         Intent placesIntent = new Intent(this,PlacesAdviserActivity.class);
         placesIntent.putExtra("location",currentLocation);
+        placesIntent.putExtra("city_country",currentCity+", "+currentCountry);
         placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(placesIntent);
         finish();

@@ -1,11 +1,27 @@
 package com.example.razvan.socialeventshelper;
 
+import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
+import com.example.razvan.socialeventshelper.Adapters.PlacesAdviserAdapter;
+import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.Utils.DownloadUrl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,33 +30,81 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Created by Razvan on 4/7/2017.
  */
 
 public class PlacesAdviserActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar_title)
+    TextView toolbarTitle;
+
+    @BindView(R.id.places_option)
+    LinearLayout placesOption;
+
+    @BindView(R.id.radio_group)
+    RadioGroup radioGroup;
+
+    @BindView(R.id.places_adviser_recyclerView)
+    RecyclerView placesView;
+
+    private Location currentLocation;
+
+    private PlacesAdviserAdapter placesAdapter;
+    private List<PlacesAdviserModel> placesList = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_places_adviser);
+        ButterKnife.bind(this);
 
-        Location currentLocation = getIntent().getParcelableExtra("location");
+        currentLocation = getIntent().getParcelableExtra("location");
 
-        String urlValue = buildURL(currentLocation);
-        PlacesTask placesTask = new PlacesTask();
-        placesTask.execute(urlValue);
+        String currentCityCountry = getIntent().getStringExtra("city_country");
+        toolbarTitle.setText(currentCityCountry);
+
+        placesOption.setBackgroundColor(ContextCompat.getColor(PlacesAdviserActivity.this,R.color.colorPrimaryTransp));
     }
 
-    public String buildURL(Location location) {
+    public String buildURL(Location location,Integer checkedOption) {
 
         double myLatitude = location.getLatitude();
         double myLongitude = location.getLongitude();
 
+        View radioButton = radioGroup.findViewById(checkedOption);
+        int index = radioGroup.indexOfChild(radioButton);
+
+        String checkedOptionString;
+        if(index == 0){
+            checkedOptionString = "restaurant";
+        }
+        else if(index == 1){
+            checkedOptionString = "bar";
+        }
+        else if(index == 2){
+            checkedOptionString = "pharmacy";
+        }
+        else if(index == 3){
+            checkedOptionString = "hospital";
+        }
+        else if(index == 4){
+            checkedOptionString = "gas_station";
+        }
+        else{
+            checkedOptionString = "shopping_mall";
+        }
+
+        Log.i("WTFDA",checkedOption+"");
+
         StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         urlBuild.append("location=" + myLatitude + "," + myLongitude);
         urlBuild.append("&radius=5000");
-        urlBuild.append("&types=" + "restaurant" );
+        urlBuild.append("&types=" + checkedOptionString );
         urlBuild.append("&sensor=true");
         urlBuild.append("&key=");
         urlBuild.append("AIzaSyC_YDPo6qqafnaKEJtQsI_7M97SUl83ku4");
@@ -88,6 +152,8 @@ public class PlacesAdviserActivity extends AppCompatActivity {
             String latitude ;
             String longitude ;
             String reference ;
+            String rating = "";
+            String open_now = "";
 
             try {
                 if (!jPlace.isNull("name")) {
@@ -98,11 +164,21 @@ public class PlacesAdviserActivity extends AppCompatActivity {
                     vicinity = jPlace.getString("vicinity");
                 }
 
+                if (!jPlace.isNull("rating")) {
+                    rating = jPlace.getString("rating");
+                }
+
+                if (!jPlace.isNull("opening_hours")) {
+                    open_now = jPlace.getJSONObject("opening_hours").getString("open_now");
+                }
+
                 latitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lat");
                 longitude = jPlace.getJSONObject("geometry").getJSONObject("location").getString("lng");
                 reference = jPlace.getString("reference");
 
                 place.put("place_name", placeName);
+                place.put("rating", rating);
+                place.put("open_now", open_now);
                 place.put("vicinity", vicinity);
                 place.put("lat", latitude);
                 place.put("lng", longitude);
@@ -141,45 +217,30 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         protected void onPostExecute(List<HashMap<String, String>> list) {
 
             Log.d("Map", "list size: " + list.size());
-            // Clears all the existing markers;
-            /*mGoogleMap.clear();
 
             for (int i = 0; i < list.size(); i++) {
-
-                // Creating a marker
-                MarkerOptions markerOptions = new MarkerOptions();
-
-                // Getting a place from the places list
                 HashMap<String, String> hmPlace = list.get(i);
 
-
-                // Getting latitude of the place
                 double lat = Double.parseDouble(hmPlace.get("lat"));
-
-                // Getting longitude of the place
                 double lng = Double.parseDouble(hmPlace.get("lng"));
 
-                // Getting name
                 String name = hmPlace.get("place_name");
-
-                Log.d("Map", "place: " + name);
-
-                // Getting vicinity
                 String vicinity = hmPlace.get("vicinity");
+                String rating = hmPlace.get("rating");
+                String openNow = hmPlace.get("open_now");
 
-                LatLng latLng = new LatLng(lat, lng);
+                Log.i("SIGUR",openNow +" " + rating);
 
-                // Setting the position for the marker
-                markerOptions.position(latLng);
+                placesList.add(new PlacesAdviserModel(name));
+            }
 
-                markerOptions.title(name + " : " + vicinity);
+            placesAdapter = new PlacesAdviserAdapter(placesList, PlacesAdviserActivity.this);
 
-                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-
-                // Placing a marker on the touched position
-                Marker m = mGoogleMap.addMarker(markerOptions);
-
-            }*/
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+            placesView.setLayoutManager(mLayoutManager);
+            placesView.setItemAnimator(new DefaultItemAnimator());
+            placesView.setAdapter(placesAdapter);
+            placesView.setHasFixedSize(true);
         }
     }
 
@@ -202,5 +263,14 @@ public class PlacesAdviserActivity extends AppCompatActivity {
             ParserTask parserTask = new ParserTask();
             parserTask.execute(result);
         }
+    }
+
+    @OnClick(R.id.check_option)
+    public void onCheckOptionClick(){
+        Integer checkedOption = radioGroup.getCheckedRadioButtonId();
+        String urlValue = buildURL(currentLocation,checkedOption);
+        PlacesTask placesTask = new PlacesTask();
+        placesTask.execute(urlValue);
+
     }
 }

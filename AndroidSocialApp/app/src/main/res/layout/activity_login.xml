@@ -42,7 +42,7 @@
                     android:src="@drawable/ic_person_white_24dp"/>
                 <EditText
                     android:id="@+id/username"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:hint="Username"
                     android:textColorHint="@color/white"
@@ -76,7 +76,7 @@
                     android:src="@drawable/ic_vpn_key_white_24dp"/>
                 <EditText
                     android:id="@+id/password"
-                    android:layout_width="wrap_content"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
                     android:hint="Password"
                     android:textColorHint="@color/white"
