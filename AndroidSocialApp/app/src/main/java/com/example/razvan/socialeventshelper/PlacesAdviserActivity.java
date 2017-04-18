@@ -82,21 +82,27 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         String checkedOptionString;
         if(index == 0){
             checkedOptionString = "restaurant";
+            placesList.clear();
         }
         else if(index == 1){
             checkedOptionString = "bar";
+            placesList.clear();
         }
         else if(index == 2){
             checkedOptionString = "pharmacy";
+            placesList.clear();
         }
         else if(index == 3){
             checkedOptionString = "hospital";
+            placesList.clear();
         }
         else if(index == 4){
             checkedOptionString = "gas_station";
+            placesList.clear();
         }
         else{
             checkedOptionString = "shopping_mall";
+            placesList.clear();
         }
 
         Log.i("WTFDA",checkedOption+"");
@@ -225,13 +231,11 @@ public class PlacesAdviserActivity extends AppCompatActivity {
                 double lng = Double.parseDouble(hmPlace.get("lng"));
 
                 String name = hmPlace.get("place_name");
-                String vicinity = hmPlace.get("vicinity");
+                String street = hmPlace.get("vicinity");
                 String rating = hmPlace.get("rating");
                 String openNow = hmPlace.get("open_now");
 
-                Log.i("SIGUR",openNow +" " + rating);
-
-                placesList.add(new PlacesAdviserModel(name));
+                placesList.add(new PlacesAdviserModel(name,street,rating,openNow,lat,lng));
             }
 
             placesAdapter = new PlacesAdviserAdapter(placesList, PlacesAdviserActivity.this);

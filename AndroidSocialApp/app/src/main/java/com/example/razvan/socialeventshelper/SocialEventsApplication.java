@@ -121,7 +121,7 @@ public class SocialEventsApplication extends Application {
             @Override
             public void run() {
                 try {
-                    serverSocket = new Socket("192.168.0.103", 8080);
+                    serverSocket = new Socket("192.168.0.102", 8080);
                 }catch(IOException e){
                     Toast.makeText(getApplicationContext(),"Connection to server failed. Try to restart the application.",Toast.LENGTH_LONG).show();
                 }
