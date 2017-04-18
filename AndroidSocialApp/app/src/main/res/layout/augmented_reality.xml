@@ -11,25 +11,17 @@
         app:elevation="0dp"
         android:id="@+id/appBar">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+
+        <ExpandableListView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:id="@+id/expandable_list"
             android:background="#00ffffff"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-            <ExpandableListView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/expandable_list"
-                android:background="#00ffffff"
-                android:layout_marginEnd="25dp"
-                android:layout_marginTop="40dp"
-                android:groupIndicator="@null"
-                android:divider="@null"
-                />
-
-        </android.support.v7.widget.Toolbar>
+            android:layout_marginEnd="25dp"
+            android:layout_marginTop="40dp"
+            android:groupIndicator="@null"
+            android:divider="@null"
+            />
 
     </android.support.design.widget.AppBarLayout>
 

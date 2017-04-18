@@ -97,17 +97,7 @@ public class MainEventsActivity extends AppCompatActivity {
         dialog.setInverseBackgroundForced(false);
         dialog.show();
 
-
-        Bundle extras = getIntent().getExtras();
-        if(extras != null){
-            String newCity = extras.getString("my_city");
-            initiateEvents(newCity);
-            toolbarTitle.setText(newCity);
-        }
-        else
-            findLocationAndCallEvents();
-
-
+        findLocationAndCallEvents();
     }
 
     public void findLocationAndCallEvents() {
@@ -292,15 +282,12 @@ public class MainEventsActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.map_option)
+    @OnClick(R.id.see_map)
     void onMapOptionClick(View view){
         Intent mapIntent = new Intent(this,MapsActivity.class);
         mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         mapIntent.putExtra("location",currentLocation);
-        mapIntent.putExtra("city_country",currentCity+", "+currentCountry);
-        mapIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(mapIntent);
-        finish();
     }
 
     @OnClick(R.id.places_option)
@@ -315,8 +302,8 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.ag_option)
     void onAgOptionClick(View view){
-        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
-        mapIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
-        startActivity(mapIntent);
+        Intent agIntent = new Intent(this,AugmentedRealityActivity.class);
+        agIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
+        startActivity(agIntent);
     }
 }

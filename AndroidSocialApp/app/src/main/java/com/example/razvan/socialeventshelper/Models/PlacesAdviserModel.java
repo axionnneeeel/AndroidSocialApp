@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Razvan on 2/7/2017.
  */
 
-public class PlacesAdviserModel {
+public class PlacesAdviserModel implements Parcelable {
 
     private String placeName;
     private String placeStreet;
@@ -27,6 +27,15 @@ public class PlacesAdviserModel {
         this.placeOpenNow = placeOpenNow;
         this.placeLatitude = placeLatitude;
         this.placeLongitude = placeLongitude;
+    }
+
+    public PlacesAdviserModel(Parcel source){
+        placeName = source.readString();
+        placeStreet = source.readString();
+        placeRating = source.readString();
+        placeOpenNow = source.readString();
+        placeLatitude = source.readDouble();
+        placeLongitude = source.readDouble();
     }
 
     public String getPlaceName() {
@@ -76,4 +85,29 @@ public class PlacesAdviserModel {
     public void setPlaceLongitude(double placeLongitude) {
         this.placeLongitude = placeLongitude;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(placeName);
+        parcel.writeString(placeStreet);
+        parcel.writeString(placeRating);
+        parcel.writeString(placeOpenNow);
+        parcel.writeDouble(placeLatitude);
+        parcel.writeDouble(placeLongitude);
+    }
+
+    public static final Parcelable.Creator<PlacesAdviserModel> CREATOR = new Parcelable.Creator<PlacesAdviserModel>() {
+        public PlacesAdviserModel createFromParcel(Parcel in) {
+            return new PlacesAdviserModel(in);
+        }
+
+        public PlacesAdviserModel[] newArray(int size) {
+            return new PlacesAdviserModel[size];
+        }
+    };
 }

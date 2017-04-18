@@ -14,11 +14,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.Status;
@@ -50,11 +52,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    @BindView(R.id.map_option)
-    LinearLayout mapOption;
-
-    @BindView(R.id.toolbar_title)
-    TextView toolbarTitle;
 
 
     private GoogleMap googleMaps;
@@ -71,6 +68,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ProgressDialog dialog;
 
     private ArrayList<MainEventsModel> eventsList = new ArrayList<>();
+    private ArrayList<PlacesAdviserModel> placesList = new ArrayList<>();
 
 
     @Override
@@ -78,7 +76,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
 
         dialog=new ProgressDialog(this);
-        dialog.setMessage("Putting events on the map...");
+        dialog.setMessage("Putting markers on the map...");
         dialog.setCancelable(false);
         dialog.setInverseBackgroundForced(false);
         dialog.show();
@@ -90,11 +88,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         setContentView(R.layout.activity_maps);
         ButterKnife.bind(this);
-
-        String currentCityCountry = getIntent().getStringExtra("city_country");
-        toolbarTitle.setText(currentCityCountry);
-
-        mapOption.setBackgroundColor(ContextCompat.getColor(MapsActivity.this, R.color.colorPrimaryTransp));
 
         googleClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this, this)
@@ -155,11 +148,22 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void putEventsMarker(){
-        eventsList = getIntent().getParcelableArrayListExtra("all_events");
+        
+        if(getIntent().hasExtra("all_events")) {
+            eventsList = getIntent().getParcelableArrayListExtra("all_events");
 
-        for(MainEventsModel currentEvent : eventsList) {
-            LatLng currentEventCoord = new LatLng(currentEvent.getEventLatitude(),currentEvent.getEventLongitude());
-            googleMaps.addMarker(new MarkerOptions().position(currentEventCoord).title(currentEvent.getEventTitle()));
+            for (MainEventsModel currentPlace : eventsList) {
+                LatLng currentEventCoord = new LatLng(currentPlace.getEventLatitude(), currentPlace.getEventLongitude());
+                googleMaps.addMarker(new MarkerOptions().position(currentEventCoord).title(currentPlace.getEventTitle()));
+            }
+        }
+        else if(getIntent().hasExtra("all_places")){
+            placesList = getIntent().getParcelableArrayListExtra("all_places");
+
+            for (PlacesAdviserModel currentPlace : placesList) {
+                LatLng currentEventCoord = new LatLng(currentPlace.getPlaceLatitude(), currentPlace.getPlaceLongitude());
+                googleMaps.addMarker(new MarkerOptions().position(currentEventCoord).title(currentPlace.getPlaceName()));
+            }
         }
     }
 
@@ -173,19 +177,4 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         Log.i("MAPS", "Play services connection suspended");
     }
 
-
-    @OnClick(R.id.events_option)
-    void onEventsOptionClick(View view){
-        Intent eventsIntent = new Intent(this,MainEventsActivity.class);
-        eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(eventsIntent);
-        finish();
-    }
-
-    @OnClick(R.id.ag_option)
-    void onAgOptionClick(View view){
-        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
-        mapIntent.putParcelableArrayListExtra("all_events", eventsList);
-        startActivity(mapIntent);
-    }
 }

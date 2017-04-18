@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -12,15 +13,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
-import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.Adapters.PlacesAdviserAdapter;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.Utils.DownloadUrl;
 import org.json.JSONArray;
@@ -51,6 +49,12 @@ public class PlacesAdviserActivity extends AppCompatActivity {
 
     @BindView(R.id.places_adviser_recyclerView)
     RecyclerView placesView;
+
+    @BindView(R.id.ag_option)
+    ImageView agOption;
+
+    @BindView(R.id.see_map)
+    ImageView seeMap;
 
     private Location currentLocation;
 
@@ -105,7 +109,6 @@ public class PlacesAdviserActivity extends AppCompatActivity {
             placesList.clear();
         }
 
-        Log.i("WTFDA",checkedOption+"");
 
         StringBuilder urlBuild = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         urlBuild.append("location=" + myLatitude + "," + myLongitude);
@@ -245,6 +248,9 @@ public class PlacesAdviserActivity extends AppCompatActivity {
             placesView.setItemAnimator(new DefaultItemAnimator());
             placesView.setAdapter(placesAdapter);
             placesView.setHasFixedSize(true);
+
+            agOption.setVisibility(View.VISIBLE);
+            seeMap.setVisibility(View.VISIBLE);
         }
     }
 
@@ -276,5 +282,28 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         PlacesTask placesTask = new PlacesTask();
         placesTask.execute(urlValue);
 
+    }
+
+    @OnClick(R.id.events_option)
+    void onEventsOptionClick(View view){
+        Intent eventsIntent = new Intent(this,MainEventsActivity.class);
+        eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(eventsIntent);
+        finish();
+    }
+
+    @OnClick(R.id.see_map)
+    void onMapOptionClick(View view){
+        Intent mapIntent = new Intent(this,MapsActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_places", (ArrayList<? extends Parcelable>) placesList);
+        mapIntent.putExtra("location",currentLocation);
+        startActivity(mapIntent);
+    }
+
+    @OnClick(R.id.ag_option)
+    void onAgOptionClick(View view){
+        Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
+        mapIntent.putParcelableArrayListExtra("all_places", (ArrayList<? extends Parcelable>) placesList);
+        startActivity(mapIntent);
     }
 }

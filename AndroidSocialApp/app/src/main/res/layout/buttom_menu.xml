@@ -87,15 +87,15 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:background="@color/colorPrimary"
-                android:id="@+id/map_option">
+                android:id="@+id/friends_option">
                 <ImageView
                     android:layout_width="@dimen/imageview_width"
                     android:layout_height="@dimen/imageview_height"
-                    android:src="@drawable/ic_place_white_24dp" />
+                    android:src="@drawable/ic_people_white_24dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Map"
+                    android:text="Friends"
                     android:textColor="#FFFFFF"
                     android:textSize="14sp"/>
             </LinearLayout>
