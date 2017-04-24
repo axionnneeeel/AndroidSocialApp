@@ -1,24 +1,13 @@
 package com.example.razvan.socialeventshelper;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
 import java.net.Socket;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;

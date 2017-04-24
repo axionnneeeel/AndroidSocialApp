@@ -1,14 +1,11 @@
 package com.example.razvan.socialeventshelper;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,19 +15,13 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
-
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.facebook.appevents.AppEventsLogger;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Razvan on 1/4/2017.
@@ -121,7 +112,7 @@ public class SocialEventsApplication extends Application {
             @Override
             public void run() {
                 try {
-                    serverSocket = new Socket("192.168.0.102", 8080);
+                    serverSocket = new Socket("192.168.0.100", 8080);
                 }catch(IOException e){
                     Toast.makeText(getApplicationContext(),"Connection to server failed. Try to restart the application.",Toast.LENGTH_LONG).show();
                 }

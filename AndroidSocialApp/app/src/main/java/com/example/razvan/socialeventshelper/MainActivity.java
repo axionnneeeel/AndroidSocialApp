@@ -4,13 +4,6 @@ package com.example.razvan.socialeventshelper;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.net.Socket;
-
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
