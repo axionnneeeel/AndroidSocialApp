@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
+import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
 import com.example.razvan.socialeventshelper.Utils.MapUtil;
@@ -289,7 +290,7 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.places_option)
     void onPlacesOptionClick(View view){
-        Intent placesIntent = new Intent(this,PlacesAdviserActivity.class);
+        Intent placesIntent = new Intent(this,ChatbotActivity.class);
         placesIntent.putExtra("location",currentLocation);
         placesIntent.putExtra("city_country",currentCity+", "+currentCountry);
         placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
