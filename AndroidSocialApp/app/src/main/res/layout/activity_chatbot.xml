@@ -1,10 +1,11 @@
 
 <android.support.design.widget.CoordinatorLayout
-xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-android:fitsSystemWindows="true">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:focusableInTouchMode="true">
 
 <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
@@ -95,6 +96,7 @@ android:fitsSystemWindows="true">
     </RelativeLayout>
 
 <include layout="@layout/buttom_menu"
-    android:visibility="gone"/>
+    android:visibility="gone"
+    android:id="@+id/menu"/>
 
 </android.support.design.widget.CoordinatorLayout>

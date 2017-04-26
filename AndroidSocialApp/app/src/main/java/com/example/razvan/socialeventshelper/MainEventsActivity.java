@@ -28,6 +28,7 @@ import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
 import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
 import com.example.razvan.socialeventshelper.Utils.MapUtil;
 import com.facebook.AccessToken;
@@ -290,11 +291,21 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.places_option)
     void onPlacesOptionClick(View view){
-        Intent placesIntent = new Intent(this,ChatbotActivity.class);
+        Intent placesIntent = new Intent(this,PlacesAdviserActivity.class);
         placesIntent.putExtra("location",currentLocation);
         placesIntent.putExtra("city_country",currentCity+", "+currentCountry);
         placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(placesIntent);
+        finish();
+    }
+
+    @OnClick(R.id.chatbot_option)
+    void onChatBotOptionClick(View view){
+        Intent chatBotIntent = new Intent(this,ChatbotActivity.class);
+        chatBotIntent.putExtra("location",currentLocation);
+        chatBotIntent.putExtra("city_country",currentCity+", "+currentCountry);
+        chatBotIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(chatBotIntent);
         finish();
     }
 

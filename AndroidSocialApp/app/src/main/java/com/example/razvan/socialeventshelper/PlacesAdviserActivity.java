@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.example.razvan.socialeventshelper.Adapters.PlacesAdviserAdapter;
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
+import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
 import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.Utils.DownloadUrl;
 import org.json.JSONArray;
@@ -56,6 +57,7 @@ public class PlacesAdviserActivity extends AppCompatActivity {
     ImageView seeMap;
 
     private Location currentLocation;
+    private String currentCityCountry;
 
     private PlacesAdviserAdapter placesAdapter;
     private List<PlacesAdviserModel> placesList = new ArrayList<>();
@@ -68,7 +70,7 @@ public class PlacesAdviserActivity extends AppCompatActivity {
 
         currentLocation = getIntent().getParcelableExtra("location");
 
-        String currentCityCountry = getIntent().getStringExtra("city_country");
+        currentCityCountry = getIntent().getStringExtra("city_country");
         toolbarTitle.setText(currentCityCountry);
 
         placesOption.setBackgroundColor(ContextCompat.getColor(PlacesAdviserActivity.this,R.color.colorPrimaryTransp));
@@ -304,5 +306,15 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         Intent mapIntent = new Intent(this,AugmentedRealityActivity.class);
         mapIntent.putParcelableArrayListExtra("all_places", (ArrayList<? extends Parcelable>) placesList);
         startActivity(mapIntent);
+    }
+
+    @OnClick(R.id.chatbot_option)
+    void onChatBotOptionClick(View view){
+        Intent chatBotIntent = new Intent(this,ChatbotActivity.class);
+        chatBotIntent.putExtra("location",currentLocation);
+        chatBotIntent.putExtra("city_country",currentCityCountry);
+        chatBotIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(chatBotIntent);
+        finish();
     }
 }
