@@ -309,6 +309,16 @@ public class MainEventsActivity extends AppCompatActivity {
         finish();
     }
 
+    @OnClick(R.id.account_option)
+    void onAccountOptionClick(View view){
+        Intent accountIntent = new Intent(this,AccountActivity.class);
+        accountIntent.putExtra("location",currentLocation);
+        accountIntent.putExtra("city_country",currentCity+", "+currentCountry);
+        accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(accountIntent);
+        finish();
+    }
+
     @OnClick(R.id.ag_option)
     void onAgOptionClick(View view){
         Intent agIntent = new Intent(this,AugmentedRealityActivity.class);

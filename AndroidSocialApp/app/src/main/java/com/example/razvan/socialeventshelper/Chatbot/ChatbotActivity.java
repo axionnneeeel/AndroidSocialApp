@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.razvan.socialeventshelper.AccountActivity;
 import com.example.razvan.socialeventshelper.MainEventsActivity;
 import com.example.razvan.socialeventshelper.PlacesAdviserActivity;
 import com.example.razvan.socialeventshelper.R;
@@ -233,6 +234,16 @@ public class ChatbotActivity extends AppCompatActivity {
         placesIntent.putExtra("city_country",currentCityCountry);
         placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(placesIntent);
+        finish();
+    }
+
+    @OnClick(R.id.account_option)
+    void onAccountOptionClick(View view){
+        Intent accountIntent = new Intent(this,AccountActivity.class);
+        accountIntent.putExtra("location",currentLocation);
+        accountIntent.putExtra("city_country",currentCityCountry);
+        accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(accountIntent);
         finish();
     }
 

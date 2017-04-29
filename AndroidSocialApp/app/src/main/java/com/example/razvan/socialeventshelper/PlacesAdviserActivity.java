@@ -317,4 +317,14 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         startActivity(chatBotIntent);
         finish();
     }
+
+    @OnClick(R.id.account_option)
+    void onAccountOptionClick(View view){
+        Intent accountIntent = new Intent(this,AccountActivity.class);
+        accountIntent.putExtra("location",currentLocation);
+        accountIntent.putExtra("city_country",currentCityCountry);
+        accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(accountIntent);
+        finish();
+    }
 }

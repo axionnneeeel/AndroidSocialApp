@@ -16,6 +16,8 @@ public class ServerCommunication {
 
     private Integer checkLogin = 0;
     private Integer registerFlag = 0;
+    private String[] userDetails = new String[4];
+
     public boolean waitForThreadFinish = false;
 
 
@@ -61,6 +63,36 @@ public class ServerCommunication {
         }
     }
 
+    public void getUserCredentials(){
+        try {
+            output.write(3);
+            output.flush();
+
+            this.userDetails[0] = input.readUTF();
+            this.userDetails[1] = input.readUTF();
+            this.userDetails[2] = input.readUTF();
+            this.userDetails[3] = input.readUTF();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendUserDetailsChangesAndReceiveConfirmation(String firstName,String lastName,String email,byte[] avatar){
+        try {
+            output.write(4);
+            output.writeUTF(firstName);
+            output.writeUTF(lastName);
+            output.writeUTF(email);
+            output.write(avatar.length);
+            output.write(avatar);
+            output.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isWaitForThreadFinish() {
         return waitForThreadFinish;
     }
@@ -83,5 +115,13 @@ public class ServerCommunication {
 
     public void setRegisterFlag(Integer registerFlag) {
         this.registerFlag = registerFlag;
+    }
+
+    public String[] getUserDetails() {
+        return userDetails;
+    }
+
+    public void setUserDetails(String[] userDetails) {
+        this.userDetails = userDetails;
     }
 }
