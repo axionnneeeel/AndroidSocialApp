@@ -17,6 +17,8 @@ public class ServerCommunication {
     private Integer checkLogin = 0;
     private Integer registerFlag = 0;
     private String[] userDetails = new String[4];
+    private Integer avatarSize;
+    private byte[] avatar;
 
     public boolean waitForThreadFinish = false;
 
@@ -73,20 +75,31 @@ public class ServerCommunication {
             this.userDetails[2] = input.readUTF();
             this.userDetails[3] = input.readUTF();
 
+            this.avatarSize = input.readInt();
+            if(avatarSize != 0){
+                avatar = new byte[avatarSize];
+                input.readFully(this.avatar,0,avatarSize);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void sendUserDetailsChangesAndReceiveConfirmation(String firstName,String lastName,String email,byte[] avatar){
+    public void sendUserDetailsChangesAndReceiveConfirmation(String firstName,String lastName,String email,byte[] avatar,Integer updatedProfilePicture){
         try {
             output.write(4);
             output.writeUTF(firstName);
             output.writeUTF(lastName);
             output.writeUTF(email);
-            output.write(avatar.length);
-            output.write(avatar);
-            output.flush();
+
+            if(updatedProfilePicture == 1) {
+                int avatarLength = avatar.length;
+                output.writeInt(avatarLength);
+                output.write(avatar, 0, avatarLength);
+                output.flush();
+            }
+            else output.writeInt(0);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -123,5 +136,21 @@ public class ServerCommunication {
 
     public void setUserDetails(String[] userDetails) {
         this.userDetails = userDetails;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    public Integer getAvatarSize() {
+        return avatarSize;
+    }
+
+    public void setAvatarSize(Integer avatarSize) {
+        this.avatarSize = avatarSize;
     }
 }

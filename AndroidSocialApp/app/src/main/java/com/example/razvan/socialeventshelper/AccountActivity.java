@@ -23,7 +23,9 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
@@ -63,7 +65,9 @@ public class AccountActivity extends AppCompatActivity {
     private ServerCommunication server = null;
 
     private final int PICK_PHOTO_FOR_AVATAR = 11;
+
     byte[] inputData;
+    private int updatedProfilePic = 0;
 
 
     @Override
@@ -99,6 +103,18 @@ public class AccountActivity extends AppCompatActivity {
         firstName.setText(userDetails[2]);
         lastName.setText(userDetails[3]);
         email.setText(userDetails[1]);
+        if(server.getAvatarSize() != 0){
+            File tempFile = null;
+            try {
+                tempFile = File.createTempFile("myPic", null, null);
+                FileOutputStream fos = new FileOutputStream(tempFile);
+                fos.write(server.getAvatar());
+                Picasso.with(this).load(tempFile).transform(new RoundedTransformation()).into(profileImage);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @OnClick(R.id.events_option)
@@ -134,7 +150,7 @@ public class AccountActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.sendUserDetailsChangesAndReceiveConfirmation(firstName.getText().toString(),lastName.getText().toString(),email.getText().toString(),inputData);
+                server.sendUserDetailsChangesAndReceiveConfirmation(firstName.getText().toString(),lastName.getText().toString(),email.getText().toString(),inputData,updatedProfilePic);
                 server.setWaitForThreadFinish(true);
             }
         }).start();
@@ -167,19 +183,20 @@ public class AccountActivity extends AppCompatActivity {
                 return;
             }
 
-            try {
-                InputStream inputStream = this.getContentResolver().openInputStream(data.getData());
-                inputData = getBytes(inputStream);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
             CropImage.activity(data.getData()).setGuidelines(CropImageView.Guidelines.ON).setCropShape(CropImageView.CropShape.OVAL).setFixAspectRatio(true).start(this);
         }
         if(requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE){
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             Uri photoUri = result.getUri();
             Picasso.with(this).load(photoUri).transform(new RoundedTransformation()).into(profileImage);
+
+            try {
+                InputStream inputStream = this.getContentResolver().openInputStream(photoUri);
+                inputData = getBytes(inputStream);
+                updatedProfilePic = 1;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
