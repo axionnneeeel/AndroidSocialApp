@@ -1,9 +1,17 @@
 package com.example.razvan.socialeventshelper;
 
+import com.example.razvan.socialeventshelper.Models.FriendsModel;
+import com.example.razvan.socialeventshelper.Utils.RoundedTransformation;
+import com.squareup.picasso.Picasso;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Razvan on 4/3/2017.
@@ -19,6 +27,8 @@ public class ServerCommunication {
     private String[] userDetails = new String[4];
     private Integer avatarSize;
     private byte[] avatar;
+
+    private List<FriendsModel> friendsList = new ArrayList<>();
 
     public boolean waitForThreadFinish = false;
 
@@ -106,6 +116,38 @@ public class ServerCommunication {
         }
     }
 
+    public void getUserFriends(){
+        try {
+            output.write(5);
+            output.flush();
+
+            Integer friendsNumber = input.readInt();
+            for(int i=0;i<friendsNumber;i++){
+                String friendName = input.readUTF();
+
+                Integer avatarSize = input.readInt();
+                if(avatarSize != 0){
+                    byte[] avatar = new byte[avatarSize];
+                    input.readFully(avatar,0,avatarSize);
+                    File tempFile = null;
+                    try {
+                        tempFile = File.createTempFile(System.currentTimeMillis()+"", null, null);
+                        FileOutputStream fos = new FileOutputStream(tempFile);
+                        fos.write(avatar);
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    FriendsModel thisFriend = new FriendsModel(friendName,0,tempFile);
+                    friendsList.add(thisFriend);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean isWaitForThreadFinish() {
         return waitForThreadFinish;
     }
@@ -152,5 +194,13 @@ public class ServerCommunication {
 
     public void setAvatarSize(Integer avatarSize) {
         this.avatarSize = avatarSize;
+    }
+
+    public List<FriendsModel> getFriendsList() {
+        return friendsList;
+    }
+
+    public void setFriendsList(List<FriendsModel> friendsList) {
+        this.friendsList = friendsList;
     }
 }

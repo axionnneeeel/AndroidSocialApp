@@ -311,11 +311,21 @@ public class MainEventsActivity extends AppCompatActivity {
 
     @OnClick(R.id.account_option)
     void onAccountOptionClick(View view){
-        Intent accountIntent = new Intent(this,AccountActivity.class);
-        accountIntent.putExtra("location",currentLocation);
-        accountIntent.putExtra("city_country",currentCity+", "+currentCountry);
-        accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(accountIntent);
+        Intent friendsIntent = new Intent(this,AccountActivity.class);
+        friendsIntent.putExtra("location",currentLocation);
+        friendsIntent.putExtra("city_country",currentCity+", "+currentCountry);
+        friendsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(friendsIntent);
+        finish();
+    }
+
+    @OnClick(R.id.friens_option)
+    void onFriendsOptionClick(View view){
+        Intent friendsIntent = new Intent(this,FriendsActivity.class);
+        friendsIntent.putExtra("location",currentLocation);
+        friendsIntent.putExtra("city_country",currentCity+", "+currentCountry);
+        friendsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(friendsIntent);
         finish();
     }
 
