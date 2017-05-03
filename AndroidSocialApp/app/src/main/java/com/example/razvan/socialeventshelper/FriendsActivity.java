@@ -1,5 +1,7 @@
 package com.example.razvan.socialeventshelper;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.InputType;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -26,6 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Razvan on 5/3/2017.
@@ -78,9 +83,28 @@ public class FriendsActivity extends AppCompatActivity {
 
         friendsAdapter = new FriendsAdapter(friendsList, this, new FriendsAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(FriendsModel item) {
-                Intent detailsIntent = new Intent(FriendsActivity.this, FriendChatActivity.class);
-                startActivity(detailsIntent);
+            public void onItemClick(final FriendsModel item) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        server.sendUserToBeDeleted(item.getFriendId());
+                        server.setWaitForThreadFinish(true);
+                    }
+                }).start();
+
+                while(!server.isWaitForThreadFinish()){
+
+                }
+
+                server.setWaitForThreadFinish(false);
+
+                AlertDialog.Builder alertDialog  = new AlertDialog.Builder(FriendsActivity.this);
+
+                alertDialog.setMessage("Friend successfully deleted! Please refresh the page!");
+                alertDialog.setTitle("Delete done!");
+                alertDialog.setPositiveButton("OK", null);
+                alertDialog.setCancelable(true);
+                alertDialog.create().show();
             }
         });
 
@@ -93,9 +117,96 @@ public class FriendsActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                friendsList.clear();
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        server.getUserFriends();
+                        server.setWaitForThreadFinish(true);
+                    }
+                }).start();
+
+                while(!server.isWaitForThreadFinish()){
+
+                }
+
+                server.setWaitForThreadFinish(false);
+
+                friendsList = server.getFriendsList();
+                friendsAdapter.notifyDataSetChanged();
+                refreshLayout.setRefreshing(false);
             }
         });
 
+    }
+
+    @OnClick(R.id.add_friend)
+    public void onAddFriendClick(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Please enter friend username.");
+
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                for(FriendsModel eachFriend : friendsList)
+                    if(eachFriend.getFriendName().equals(input.getText().toString()) ){
+                        AlertDialog.Builder alertDialog  = new AlertDialog.Builder(FriendsActivity.this);
+
+                        alertDialog.setMessage("User already exists in your friend list!");
+                        alertDialog.setTitle("Error!");
+                        alertDialog.setPositiveButton("OK", null);
+                        alertDialog.setCancelable(true);
+                        alertDialog.create().show();
+                        return;
+                    }
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        server.sendUserToBeAdded(input.getText().toString());
+                        server.setWaitForThreadFinish(true);
+                    }
+                }).start();
+
+                while(!server.isWaitForThreadFinish()){
+
+                }
+
+                server.setWaitForThreadFinish(false);
+
+                if(server.getUserExists() == -1){
+                    AlertDialog.Builder alertDialog  = new AlertDialog.Builder(FriendsActivity.this);
+
+                    alertDialog.setMessage("User does not exist in our database!");
+                    alertDialog.setTitle("Error!");
+                    alertDialog.setPositiveButton("OK", null);
+                    alertDialog.setCancelable(true);
+                    alertDialog.create().show();
+                }
+                else{
+                    AlertDialog.Builder alertDialog  = new AlertDialog.Builder(FriendsActivity.this);
+
+                    alertDialog.setMessage("Friend added! Please refresh the page!");
+                    alertDialog.setTitle("Friend added!");
+                    alertDialog.setPositiveButton("OK", null);
+                    alertDialog.setCancelable(true);
+                    alertDialog.create().show();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
     }
 }

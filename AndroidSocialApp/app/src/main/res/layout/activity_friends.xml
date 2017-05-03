@@ -31,7 +31,7 @@
                 android:gravity="end">
 
                 <ImageView
-                    android:id="@+id/see_map"
+                    android:id="@+id/add_friend"
                     android:layout_width="@dimen/imageview_width"
                     android:layout_height="@dimen/imageview_height"
                     android:src="@drawable/ic_person_add_white_24dp"

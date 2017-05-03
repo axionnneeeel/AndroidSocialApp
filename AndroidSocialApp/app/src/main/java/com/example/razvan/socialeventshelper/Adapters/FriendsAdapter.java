@@ -35,12 +35,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         public ImageView friendAvatar;
         public TextView friendName;
         public TextView friendStatus;
+        public ImageView deleteFriend;
 
         public MyViewHolder(View view) {
             super(view);
             friendAvatar = (ImageView) view.findViewById(R.id.friend_avatar);
             friendName = (TextView) view.findViewById(R.id.friend_name);
             friendStatus = (TextView) view.findViewById(R.id.friend_status);
+            deleteFriend = (ImageView) view.findViewById(R.id.delete_friend);
         }
     }
 
@@ -63,9 +65,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         final FriendsModel friend = friendsList.get(position);
         holder.friendName.setText(friend.getFriendName());
         holder.friendStatus.setText("Offline");
-        Picasso.with(context).load(friend.getFriendAvatar()).transform(new RoundedTransformation()).into(holder.friendAvatar);
+        if(friend.getFriendAvatar() == null)
+            holder.friendAvatar.setImageResource(R.drawable.ic_face_black_24dp);
+        else
+            Picasso.with(context).load(friend.getFriendAvatar()).transform(new RoundedTransformation()).into(holder.friendAvatar);
 
-        holder.friendAvatar.setOnClickListener(new View.OnClickListener() {
+        holder.deleteFriend.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 listener.onItemClick(friend);
             }

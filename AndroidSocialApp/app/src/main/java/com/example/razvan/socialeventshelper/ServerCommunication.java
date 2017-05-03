@@ -28,6 +28,8 @@ public class ServerCommunication {
     private Integer avatarSize;
     private byte[] avatar;
 
+    private Integer userExists = 0;
+
     private List<FriendsModel> friendsList = new ArrayList<>();
 
     public boolean waitForThreadFinish = false;
@@ -123,6 +125,7 @@ public class ServerCommunication {
 
             Integer friendsNumber = input.readInt();
             for(int i=0;i<friendsNumber;i++){
+                Integer friendID = input.readInt();
                 String friendName = input.readUTF();
 
                 Integer avatarSize = input.readInt();
@@ -138,10 +141,39 @@ public class ServerCommunication {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    FriendsModel thisFriend = new FriendsModel(friendName,0,tempFile);
+                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,0,tempFile);
+                    friendsList.add(thisFriend);
+                }
+                else{
+                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,0);
                     friendsList.add(thisFriend);
                 }
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendUserToBeDeleted(Integer friendId){
+        try {
+            output.write(6);
+            output.writeInt(friendId);
+            output.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendUserToBeAdded(String userToBeAdded){
+        try {
+            output.write(7);
+            output.writeUTF(userToBeAdded);
+            output.flush();
+
+            Integer noUser = input.readInt();
+            this.userExists = noUser;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -202,5 +234,14 @@ public class ServerCommunication {
 
     public void setFriendsList(List<FriendsModel> friendsList) {
         this.friendsList = friendsList;
+    }
+
+
+    public Integer getUserExists() {
+        return userExists;
+    }
+
+    public void setUserExists(Integer userExists) {
+        this.userExists = userExists;
     }
 }
