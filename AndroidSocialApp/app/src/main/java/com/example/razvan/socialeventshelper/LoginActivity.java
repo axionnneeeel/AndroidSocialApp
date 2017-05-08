@@ -7,6 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
+
+import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
+
 import java.net.Socket;
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper.Adapters;
+package com.example.razvan.socialeventshelper.PlacesAdviser;
 
 /**
  * Created by Razvan on 2/7/2017.
@@ -12,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
+
 import com.example.razvan.socialeventshelper.R;
 import java.util.List;
 

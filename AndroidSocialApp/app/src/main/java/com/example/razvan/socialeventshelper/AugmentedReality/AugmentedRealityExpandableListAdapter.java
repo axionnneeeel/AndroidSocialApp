@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper.Adapters;
+package com.example.razvan.socialeventshelper.AugmentedReality;
 
 /**
  * Created by Razvan on 3/20/2017.

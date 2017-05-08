@@ -1,8 +1,9 @@
-package com.example.razvan.socialeventshelper;
+package com.example.razvan.socialeventshelper.Friends;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -12,17 +13,18 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
-import com.example.razvan.socialeventshelper.Adapters.FriendsAdapter;
-import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
-import com.example.razvan.socialeventshelper.Adapters.PlacesAdviserAdapter;
+import com.example.razvan.socialeventshelper.AccountActivity;
+import com.example.razvan.socialeventshelper.ChatActivity;
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
-import com.example.razvan.socialeventshelper.Models.FriendsModel;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
-import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
+import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
+import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserActivity;
+import com.example.razvan.socialeventshelper.R;
+import com.example.razvan.socialeventshelper.ServerCommunication;
+import com.example.razvan.socialeventshelper.SocialEventsApplication;
 
 import java.net.Socket;
 import java.util.ArrayList;
@@ -53,11 +55,17 @@ public class FriendsActivity extends AppCompatActivity {
     private Socket serverSocket;
     private ServerCommunication server = null;
 
+    private Location currentLocation;
+    private String currentCityCountry;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
         ButterKnife.bind(this);
+
+        currentLocation = getIntent().getParcelableExtra("location");
+        currentCityCountry = getIntent().getStringExtra("city_country");
 
         friendsOption.setBackgroundColor(ContextCompat.getColor(FriendsActivity.this,R.color.colorPrimaryTransp));
 
@@ -105,6 +113,14 @@ public class FriendsActivity extends AppCompatActivity {
                 alertDialog.setPositiveButton("OK", null);
                 alertDialog.setCancelable(true);
                 alertDialog.create().show();
+            }
+
+            @Override
+            public void onItemClickChat(FriendsModel item) {
+                Intent accountIntent = new Intent(FriendsActivity.this, ChatActivity.class);
+                accountIntent.putExtra("friendId",item.getFriendId());
+                accountIntent.putExtra("friendName",item.getFriendName());
+                startActivity(accountIntent);
             }
         });
 
@@ -208,5 +224,43 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
         builder.show();
+    }
+
+    @OnClick(R.id.events_option)
+    void onEventsOptionClick(View view){
+        Intent eventsIntent = new Intent(this,MainEventsActivity.class);
+        eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(eventsIntent);
+        finish();
+    }
+
+    @OnClick(R.id.places_option)
+    void onPlacesOptionClick(View view){
+        Intent placesIntent = new Intent(this,PlacesAdviserActivity.class);
+        placesIntent.putExtra("location",currentLocation);
+        placesIntent.putExtra("city_country",currentCityCountry);
+        placesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(placesIntent);
+        finish();
+    }
+
+    @OnClick(R.id.chatbot_option)
+    void onChatBotOptionClick(View view){
+        Intent chatBotIntent = new Intent(this,ChatbotActivity.class);
+        chatBotIntent.putExtra("location",currentLocation);
+        chatBotIntent.putExtra("city_country",currentCityCountry);
+        chatBotIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(chatBotIntent);
+        finish();
+    }
+
+    @OnClick(R.id.account_option)
+    void onAccountOptionClick(View view){
+        Intent accountIntent = new Intent(this,AccountActivity.class);
+        accountIntent.putExtra("location",currentLocation);
+        accountIntent.putExtra("city_country",currentCityCountry);
+        accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(accountIntent);
+        finish();
     }
 }

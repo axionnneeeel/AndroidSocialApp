@@ -18,8 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.example.razvan.socialeventshelper.AccountActivity;
-import com.example.razvan.socialeventshelper.MainEventsActivity;
-import com.example.razvan.socialeventshelper.PlacesAdviserActivity;
+import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
+import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
+import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserActivity;
 import com.example.razvan.socialeventshelper.R;
 
 import org.alicebot.ab.AIMLProcessor;
@@ -97,7 +98,7 @@ public class ChatbotActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String message = mEditTextMessage.getText().toString();
-                //bot
+
                 String response = chat.multisentenceRespond(mEditTextMessage.getText().toString());
                 if (TextUtils.isEmpty(message)) {
                     return;
@@ -244,6 +245,16 @@ public class ChatbotActivity extends AppCompatActivity {
         accountIntent.putExtra("city_country",currentCityCountry);
         accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(accountIntent);
+        finish();
+    }
+
+    @OnClick(R.id.friens_option)
+    void onFriendsOptionClick(View view){
+        Intent friendsIntent = new Intent(this,FriendsActivity.class);
+        friendsIntent.putExtra("location",currentLocation);
+        friendsIntent.putExtra("city_country",currentCityCountry);
+        friendsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(friendsIntent);
         finish();
     }
 

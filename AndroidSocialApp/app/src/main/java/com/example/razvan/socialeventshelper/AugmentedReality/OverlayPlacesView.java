@@ -22,7 +22,7 @@ import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
+import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.R;
 import java.util.ArrayList;
 import java.util.List;

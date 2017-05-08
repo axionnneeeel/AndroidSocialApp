@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper.Models;
+package com.example.razvan.socialeventshelper.Events;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper.Models;
+package com.example.razvan.socialeventshelper.Friends;
 
 import java.io.File;
 

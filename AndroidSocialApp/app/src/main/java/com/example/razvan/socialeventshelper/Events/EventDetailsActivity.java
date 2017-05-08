@@ -1,11 +1,12 @@
-package com.example.razvan.socialeventshelper;
+package com.example.razvan.socialeventshelper.Events;
 
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+
+import com.example.razvan.socialeventshelper.R;
 import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;

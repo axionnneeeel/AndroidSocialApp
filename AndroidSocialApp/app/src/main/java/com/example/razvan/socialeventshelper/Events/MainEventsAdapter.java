@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper.Adapters;
+package com.example.razvan.socialeventshelper.Events;
 
 /**
  * Created by Razvan on 2/7/2017.
@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
+
 import com.example.razvan.socialeventshelper.R;
 import com.squareup.picasso.Picasso;
 import java.util.List;

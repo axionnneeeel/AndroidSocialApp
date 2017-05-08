@@ -1,8 +1,6 @@
 package com.example.razvan.socialeventshelper;
 
-import com.example.razvan.socialeventshelper.Models.FriendsModel;
-import com.example.razvan.socialeventshelper.Utils.RoundedTransformation;
-import com.squareup.picasso.Picasso;
+import com.example.razvan.socialeventshelper.Friends.FriendsModel;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -32,10 +30,13 @@ public class ServerCommunication {
 
     private List<FriendsModel> friendsList = new ArrayList<>();
 
+    private List<String> messagesList = new ArrayList<>();
+    private Integer messagesNumber;
+
     public boolean waitForThreadFinish = false;
 
 
-    ServerCommunication(Socket serverSocket){
+    public ServerCommunication(Socket serverSocket){
         this.serverSocket = serverSocket;
 
         try {
@@ -127,6 +128,7 @@ public class ServerCommunication {
             for(int i=0;i<friendsNumber;i++){
                 Integer friendID = input.readInt();
                 String friendName = input.readUTF();
+                Integer friendStatus = input.readInt();
 
                 Integer avatarSize = input.readInt();
                 if(avatarSize != 0){
@@ -141,11 +143,11 @@ public class ServerCommunication {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,0,tempFile);
+                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,friendStatus,tempFile);
                     friendsList.add(thisFriend);
                 }
                 else{
-                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,0);
+                    FriendsModel thisFriend = new FriendsModel(friendID,friendName,friendStatus);
                     friendsList.add(thisFriend);
                 }
             }
@@ -179,6 +181,38 @@ public class ServerCommunication {
             e.printStackTrace();
         }
     }
+
+    public void getConversation(String userToChat){
+        try {
+            output.write(8);
+            output.writeUTF(userToChat);
+            output.flush();
+
+            Integer noMessages = input.readInt();
+            this.messagesNumber = noMessages;
+            if(noMessages != -1){
+                for(int i=0;i<noMessages;i++){
+                    this.messagesList.add(input.readUTF());
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessage(String userToChat,String message){
+        try {
+            output.write(9);
+            output.writeUTF(userToChat);
+            output.writeUTF(message);
+            output.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public boolean isWaitForThreadFinish() {
         return waitForThreadFinish;
@@ -243,5 +277,21 @@ public class ServerCommunication {
 
     public void setUserExists(Integer userExists) {
         this.userExists = userExists;
+    }
+
+    public Integer getMessagesNumber() {
+        return messagesNumber;
+    }
+
+    public void setMessagesNumber(Integer messagesNumber) {
+        this.messagesNumber = messagesNumber;
+    }
+
+    public List<String> getMessagesList() {
+        return messagesList;
+    }
+
+    public void setMessagesList(List<String> messagesList) {
+        this.messagesList = messagesList;
     }
 }

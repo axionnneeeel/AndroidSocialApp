@@ -1,11 +1,11 @@
-package com.example.razvan.socialeventshelper.Adapters;
+package com.example.razvan.socialeventshelper.Friends;
 
 /**
  * Created by Razvan on 2/7/2017.
  */
 
 import android.content.Context;
-import android.provider.ContactsContract;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.razvan.socialeventshelper.Models.FriendsModel;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
@@ -29,6 +27,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
 
     public interface OnItemClickListener {
         void onItemClick(FriendsModel item);
+        void onItemClickChat(FriendsModel item);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -36,6 +35,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         public TextView friendName;
         public TextView friendStatus;
         public ImageView deleteFriend;
+        public ImageView chat;
 
         public MyViewHolder(View view) {
             super(view);
@@ -43,6 +43,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
             friendName = (TextView) view.findViewById(R.id.friend_name);
             friendStatus = (TextView) view.findViewById(R.id.friend_status);
             deleteFriend = (ImageView) view.findViewById(R.id.delete_friend);
+            chat = (ImageView) view.findViewById(R.id.chat);
         }
     }
 
@@ -64,7 +65,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final FriendsModel friend = friendsList.get(position);
         holder.friendName.setText(friend.getFriendName());
-        holder.friendStatus.setText("Offline");
+        if(friend.getFriendStatus() == 0) {
+            holder.friendStatus.setText("Offline");
+            holder.friendStatus.setTextColor(Color.parseColor("#F44336"));
+        }
+        else{
+            holder.friendStatus.setText("Online");
+            holder.friendStatus.setTextColor(Color.parseColor("#4CAF50"));
+        }
         if(friend.getFriendAvatar() == null)
             holder.friendAvatar.setImageResource(R.drawable.ic_face_black_24dp);
         else
@@ -73,6 +81,12 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHo
         holder.deleteFriend.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 listener.onItemClick(friend);
+            }
+        });
+
+        holder.chat.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                listener.onItemClickChat(friend);
             }
         });
 

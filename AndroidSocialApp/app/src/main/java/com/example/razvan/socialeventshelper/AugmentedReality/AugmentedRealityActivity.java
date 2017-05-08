@@ -13,9 +13,9 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ExpandableListView;
 import android.widget.FrameLayout;
-import com.example.razvan.socialeventshelper.Adapters.AugmentedRealityExpandableListAdapter;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
-import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
+
+import com.example.razvan.socialeventshelper.Events.MainEventsModel;
+import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserModel;
 import com.example.razvan.socialeventshelper.R;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper;
+package com.example.razvan.socialeventshelper.PlacesAdviser;
 
 import android.content.Intent;
 import android.location.Location;
@@ -17,10 +17,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import com.example.razvan.socialeventshelper.Adapters.PlacesAdviserAdapter;
+
+import com.example.razvan.socialeventshelper.AccountActivity;
+import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
+import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
+import com.example.razvan.socialeventshelper.MapsActivity;
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
-import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
+import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.DownloadUrl;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -325,6 +329,16 @@ public class PlacesAdviserActivity extends AppCompatActivity {
         accountIntent.putExtra("city_country",currentCityCountry);
         accountIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(accountIntent);
+        finish();
+    }
+
+    @OnClick(R.id.friens_option)
+    void onFriendsOptionClick(View view){
+        Intent friendsIntent = new Intent(this,FriendsActivity.class);
+        friendsIntent.putExtra("location",currentLocation);
+        friendsIntent.putExtra("city_country",currentCityCountry);
+        friendsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(friendsIntent);
         finish();
     }
 }

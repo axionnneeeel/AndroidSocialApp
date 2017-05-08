@@ -1,4 +1,4 @@
-package com.example.razvan.socialeventshelper;
+package com.example.razvan.socialeventshelper.Events;
 
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -24,11 +24,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.razvan.socialeventshelper.Adapters.MainEventsAdapter;
+
+import com.example.razvan.socialeventshelper.AccountActivity;
 import com.example.razvan.socialeventshelper.AugmentedReality.AugmentedRealityActivity;
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
-import com.example.razvan.socialeventshelper.Models.MainEventsModel;
-import com.example.razvan.socialeventshelper.Models.PlacesAdviserModel;
+import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
+import com.example.razvan.socialeventshelper.MapsActivity;
+import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserActivity;
+import com.example.razvan.socialeventshelper.R;
+import com.example.razvan.socialeventshelper.SocialEventsApplication;
 import com.example.razvan.socialeventshelper.Utils.GeneralUtils;
 import com.example.razvan.socialeventshelper.Utils.MapUtil;
 import com.facebook.AccessToken;
