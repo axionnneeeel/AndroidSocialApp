@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
 import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
+import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
 
 import java.net.Socket;
 import butterknife.BindView;
@@ -57,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         Integer loginValue = sendCreditentialsAndReceiveConfirmation(usernameString,passwordString);
 
         if(loginValue == 1){
-            Intent eventsIntent = new Intent(LoginActivity.this, MainEventsActivity.class);
+            Intent eventsIntent = new Intent(LoginActivity.this, FriendsActivity.class);
             eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(eventsIntent);
             finish();
@@ -80,19 +82,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private Integer sendCreditentialsAndReceiveConfirmation(final String user, final String pass) {
-        final ServerCommunication server = new ServerCommunication(serverSocket);
+        final ServerCommunication server = SocialEventsApplication.getInstance().getServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.checkIfLogged(user,pass);
-                server.setWaitForThreadFinish(true);
+                server.sendLoginFlag(user,pass);
             }
         }).start();
 
         while(!server.isWaitForThreadFinish()){
 
         }
+
+        server.setWaitForThreadFinish(false);
 
         return server.getCheckLogin();
     }

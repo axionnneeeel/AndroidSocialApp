@@ -14,14 +14,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 import com.example.razvan.socialeventshelper.Events.MainEventsModel;
 import com.facebook.appevents.AppEventsLogger;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Razvan on 1/4/2017.
@@ -47,6 +53,9 @@ public class SocialEventsApplication extends Application {
     private long times[] = new long[100] ;
     private final Long THIRTY_MINUTES_IN_MILI = 1800000L;
     private Socket serverSocket;
+    private ServerCommunication server = null;
+    private DataOutputStream output;
+    private DataInputStream input;
 
 
     @Override
@@ -113,8 +122,40 @@ public class SocialEventsApplication extends Application {
             public void run() {
                 try {
                     serverSocket = new Socket("192.168.2.100", 8080);
+                    listenForMessages();
                 }catch(IOException e){
                     Toast.makeText(getApplicationContext(),"Connection to server failed. Try to restart the application.",Toast.LENGTH_LONG).show();
+                }
+            }
+        }).start();
+    }
+
+    private void listenForMessages(){
+        server = new ServerCommunication(serverSocket);
+        try {
+            output = new DataOutputStream(this.serverSocket.getOutputStream());
+            input = new DataInputStream(this.serverSocket.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Integer value = input.read();
+                        if (value == 1) {
+                            server.checkIfLogged();
+                            server.setWaitForThreadFinish(true);
+                        }
+                        else if(value == 5){
+                            server.getUserFriends();
+                            server.setWaitForThreadFinish(true);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }).start();
@@ -124,4 +165,11 @@ public class SocialEventsApplication extends Application {
         return serverSocket;
     }
 
+    public ServerCommunication getServer() {
+        return server;
+    }
+
+    public void setServer(ServerCommunication server) {
+        this.server = server;
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.razvan.socialeventshelper;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -8,20 +7,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.Chatbot.ChatMessage;
 import com.example.razvan.socialeventshelper.Chatbot.ChatMessageAdapter;
-
-import org.alicebot.ab.Bot;
-import org.alicebot.ab.Chat;
-
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -75,29 +67,27 @@ public class ChatActivity extends AppCompatActivity {
             }
         }).start();
 
-        while(!server.isWaitForThreadFinish()){
+        while (!server.isWaitForThreadFinish()) {
 
         }
 
         server.setWaitForThreadFinish(false);
 
-        Integer numberMessages = server.getMessagesNumber();
-        List<String> messagesList = server.getMessagesList();
-        if(numberMessages != -1){
-            for(String eachMessage : messagesList){
-                if(eachMessage.split(" ",2)[0].equals(friendName)) {
-                    mimicOtherMessage(eachMessage.split(" ",2)[1]);
-                }
-                else sendMessage(eachMessage.split(" ",2)[1]);
+        final Integer[] numberMessages = {server.getMessagesNumber()};
+        final List<String> messagesList = server.getMessagesList();
+        if (numberMessages[0] != -1) {
+            for (String eachMessage : messagesList) {
+                if (eachMessage.split(" ", 2)[0].equals(friendName)) {
+                    mimicOtherMessage(eachMessage.split(" ", 2)[1]);
+                } else sendMessage(eachMessage.split(" ", 2)[1]);
             }
         }
-
-
 
         mButtonSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String message = mEditTextMessage.getText().toString();
+                numberMessages[0]++;
 
                 if (TextUtils.isEmpty(message)) {
                     return;

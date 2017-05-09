@@ -64,20 +64,19 @@ public class FriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_friends);
         ButterKnife.bind(this);
 
-        currentLocation = getIntent().getParcelableExtra("location");
-        currentCityCountry = getIntent().getStringExtra("city_country");
+        //currentLocation = getIntent().getParcelableExtra("location");
+        //currentCityCountry = getIntent().getStringExtra("city_country");
 
         friendsOption.setBackgroundColor(ContextCompat.getColor(FriendsActivity.this,R.color.colorPrimaryTransp));
 
         serverSocket = SocialEventsApplication.getInstance().getServerSocket();
 
-        server = new ServerCommunication(serverSocket);
+        server = SocialEventsApplication.getInstance().getServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.getUserFriends();
-                server.setWaitForThreadFinish(true);
+                server.sendFriendsFlag();
             }
         }).start();
 

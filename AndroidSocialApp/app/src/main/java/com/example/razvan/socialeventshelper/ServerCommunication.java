@@ -33,6 +33,9 @@ public class ServerCommunication {
     private List<String> messagesList = new ArrayList<>();
     private Integer messagesNumber;
 
+    private Integer newMessages;
+    private List<String> newMessagesList = new ArrayList<>();
+
     public boolean waitForThreadFinish = false;
 
 
@@ -47,13 +50,20 @@ public class ServerCommunication {
         }
     }
 
-    public void checkIfLogged(String user,String pass){
+    public void sendLoginFlag(String user,String pass){
         try {
             output.write(1);
             output.writeUTF(user);
             output.writeUTF(pass);
             output.flush();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void checkIfLogged(){
+        try {
             Integer loginFlag = input.read();
             checkLogin = loginFlag;
 
@@ -119,11 +129,17 @@ public class ServerCommunication {
         }
     }
 
-    public void getUserFriends(){
+    public void sendFriendsFlag(){
         try {
             output.write(5);
             output.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public void getUserFriends(){
+        try {
             Integer friendsNumber = input.readInt();
             for(int i=0;i<friendsNumber;i++){
                 Integer friendID = input.readInt();
@@ -213,6 +229,23 @@ public class ServerCommunication {
         }
     }
 
+    public void checkDifferences(String friendName,Integer messagesNumber){
+        try {
+            output.write(10);
+            output.writeUTF(friendName);
+            output.writeInt(messagesNumber);
+            output.flush();
+
+            Integer msgDifferences = input.readInt();
+            this.newMessages = msgDifferences;
+
+            for(int i=0;i<msgDifferences;i++)
+                this.newMessagesList.add(input.readUTF());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean isWaitForThreadFinish() {
         return waitForThreadFinish;
@@ -293,5 +326,21 @@ public class ServerCommunication {
 
     public void setMessagesList(List<String> messagesList) {
         this.messagesList = messagesList;
+    }
+
+    public List<String> getNewMessagesList() {
+        return newMessagesList;
+    }
+
+    public void setNewMessagesList(List<String> newMessagesList) {
+        this.newMessagesList = newMessagesList;
+    }
+
+    public Integer getNewMessages() {
+        return newMessages;
+    }
+
+    public void setNewMessages(Integer newMessages) {
+        this.newMessages = newMessages;
     }
 }

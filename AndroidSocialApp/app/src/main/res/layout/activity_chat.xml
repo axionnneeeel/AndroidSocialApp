@@ -41,7 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/send_message_layout"
-            android:divider="@null" />
+            android:divider="@null"
+            android:transcriptMode="alwaysScroll"
+            android:stackFromBottom="true"/>
 
         <LinearLayout
             android:id="@+id/send_message_layout"
