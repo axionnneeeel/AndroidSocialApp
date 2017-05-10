@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
 import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
 import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
@@ -23,14 +22,12 @@ import com.example.razvan.socialeventshelper.Utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -84,19 +81,20 @@ public class AccountActivity extends AppCompatActivity {
 
         serverSocket = SocialEventsApplication.getInstance().getServerSocket();
 
-        server = new ServerCommunication(serverSocket);
+        server = SocialEventsApplication.getInstance().getServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.getUserCredentials();
-                server.setWaitForThreadFinish(true);
+                server.getUserCredentialsFlag();
             }
         }).start();
 
         while(!server.isWaitForThreadFinish()){
 
         }
+
+        server.setWaitForThreadFinish(false);
 
         String[] userDetails = server.getUserDetails();
 
@@ -161,14 +159,15 @@ public class AccountActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.sendUserDetailsChangesAndReceiveConfirmation(firstName.getText().toString(),lastName.getText().toString(),email.getText().toString(),inputData,updatedProfilePic);
-                server.setWaitForThreadFinish(true);
+                server.sendUserDetailsChangesAndReceiveConfirmationFlag(firstName.getText().toString(),lastName.getText().toString(),email.getText().toString(),inputData,updatedProfilePic);
             }
         }).start();
 
         while(!server.isWaitForThreadFinish()){
 
         }
+
+        server.setWaitForThreadFinish(false);
 
         AlertDialog.Builder alertDialog  = new AlertDialog.Builder(AccountActivity.this);
 

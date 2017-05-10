@@ -16,7 +16,6 @@ import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
 import com.example.razvan.socialeventshelper.AccountActivity;
 import com.example.razvan.socialeventshelper.ChatActivity;
 import com.example.razvan.socialeventshelper.Chatbot.ChatbotActivity;
@@ -25,11 +24,9 @@ import com.example.razvan.socialeventshelper.PlacesAdviser.PlacesAdviserActivity
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.ServerCommunication;
 import com.example.razvan.socialeventshelper.SocialEventsApplication;
-
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -64,8 +61,8 @@ public class FriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_friends);
         ButterKnife.bind(this);
 
-        //currentLocation = getIntent().getParcelableExtra("location");
-        //currentCityCountry = getIntent().getStringExtra("city_country");
+        currentLocation = getIntent().getParcelableExtra("location");
+        currentCityCountry = getIntent().getStringExtra("city_country");
 
         friendsOption.setBackgroundColor(ContextCompat.getColor(FriendsActivity.this,R.color.colorPrimaryTransp));
 
@@ -94,8 +91,7 @@ public class FriendsActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        server.sendUserToBeDeleted(item.getFriendId());
-                        server.setWaitForThreadFinish(true);
+                        server.sendUserToBeDeletedFlag(item.getFriendId());
                     }
                 }).start();
 
@@ -137,8 +133,7 @@ public class FriendsActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        server.getUserFriends();
-                        server.setWaitForThreadFinish(true);
+                        server.sendFriendsFlag();
                     }
                 }).start();
 
@@ -184,8 +179,7 @@ public class FriendsActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        server.sendUserToBeAdded(input.getText().toString());
-                        server.setWaitForThreadFinish(true);
+                        server.sendUserToBeAddedFlag(input.getText().toString());
                     }
                 }).start();
 

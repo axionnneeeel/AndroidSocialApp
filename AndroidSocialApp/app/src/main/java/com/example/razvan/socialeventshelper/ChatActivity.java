@@ -57,13 +57,12 @@ public class ChatActivity extends AppCompatActivity {
 
         serverSocket = SocialEventsApplication.getInstance().getServerSocket();
 
-        server = new ServerCommunication(serverSocket);
+        server = SocialEventsApplication.getInstance().getServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.getConversation(friendName);
-                server.setWaitForThreadFinish(true);
+                server.getConversationFlag(friendName);
             }
         }).start();
 
@@ -73,9 +72,9 @@ public class ChatActivity extends AppCompatActivity {
 
         server.setWaitForThreadFinish(false);
 
-        final Integer[] numberMessages = {server.getMessagesNumber()};
+        final Integer numberMessages = server.getMessagesNumber();
         final List<String> messagesList = server.getMessagesList();
-        if (numberMessages[0] != -1) {
+        if (numberMessages != -1) {
             for (String eachMessage : messagesList) {
                 if (eachMessage.split(" ", 2)[0].equals(friendName)) {
                     mimicOtherMessage(eachMessage.split(" ", 2)[1]);
@@ -87,7 +86,6 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 final String message = mEditTextMessage.getText().toString();
-                numberMessages[0]++;
 
                 if (TextUtils.isEmpty(message)) {
                     return;
@@ -99,8 +97,7 @@ public class ChatActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        server.sendMessage(friendName,message);
-                        server.setWaitForThreadFinish(true);
+                        server.sendMessageFlag(friendName,message);
                     }
                 }).start();
 
@@ -112,6 +109,33 @@ public class ChatActivity extends AppCompatActivity {
             }
         });
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(true) {
+                    while (server.getNewMessageUser().isEmpty() || !server.isWaitForThreadFinish()) {
+
+                    }
+                    server.setWaitForThreadFinish(false);
+                    if (server.getNewMessageUser().equals(friendName)) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mimicOtherMessage(server.getMessage());
+                                server.setNewMessageUser("");
+                                server.setMessage("");
+                            }
+                        });
+                    }
+                    else{
+                        server.setMessage("");
+                        server.setNewMessageUser("");
+                    }
+                }
+
+            }
+        }).start();
+
     }
 
     private void sendMessage(String message) {
@@ -122,5 +146,17 @@ public class ChatActivity extends AppCompatActivity {
     private void mimicOtherMessage(String message) {
         ChatMessage chatMessage = new ChatMessage(message, false, false);
         mAdapter.add(chatMessage);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        SocialEventsApplication.getInstance().setIsChatOpen(1);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SocialEventsApplication.getInstance().setIsChatOpen(0);
     }
 }

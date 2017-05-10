@@ -5,7 +5,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.R;
 import com.squareup.picasso.Picasso;
 import butterknife.BindView;

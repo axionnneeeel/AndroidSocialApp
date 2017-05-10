@@ -31,7 +31,6 @@ import java.util.List;
  * Created by Razvan on 3/11/2017.
  */
 
-
 @SuppressWarnings("deprecation")
 public class OverlayPlacesView extends View implements SensorEventListener, LocationListener {
 

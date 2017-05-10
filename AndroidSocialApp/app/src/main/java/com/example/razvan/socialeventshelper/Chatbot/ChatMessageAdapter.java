@@ -23,7 +23,6 @@ public class ChatMessageAdapter extends ArrayAdapter<ChatMessage> {
     }
     @Override
     public int getViewTypeCount() {
-        // my message, other message, my image, other image
         return 4;
     }
     @Override

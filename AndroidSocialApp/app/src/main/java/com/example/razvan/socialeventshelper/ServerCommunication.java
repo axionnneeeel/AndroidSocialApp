@@ -1,7 +1,6 @@
 package com.example.razvan.socialeventshelper;
 
 import com.example.razvan.socialeventshelper.Friends.FriendsModel;
-
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -33,8 +32,8 @@ public class ServerCommunication {
     private List<String> messagesList = new ArrayList<>();
     private Integer messagesNumber;
 
-    private Integer newMessages;
-    private List<String> newMessagesList = new ArrayList<>();
+    private String newMessageUser="";
+    private String message="";
 
     public boolean waitForThreadFinish = false;
 
@@ -72,7 +71,7 @@ public class ServerCommunication {
         }
     }
 
-    public void registerOrCheckRegisterValidity(String user,String pass,String email){
+    public void registerOrCheckRegisterValidityFlag(String user,String pass,String email){
         try {
             output.write(2);
             output.writeUTF(user);
@@ -80,6 +79,13 @@ public class ServerCommunication {
             output.writeUTF(email);
             output.flush();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void registerOrCheckRegisterValidity(){
+        try {
             Integer registerFlag = input.read();
             this.registerFlag = registerFlag;
 
@@ -88,11 +94,18 @@ public class ServerCommunication {
         }
     }
 
-    public void getUserCredentials(){
+    public void getUserCredentialsFlag(){
         try {
             output.write(3);
             output.flush();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getUserCredentials(){
+        try {
             this.userDetails[0] = input.readUTF();
             this.userDetails[1] = input.readUTF();
             this.userDetails[2] = input.readUTF();
@@ -109,7 +122,7 @@ public class ServerCommunication {
         }
     }
 
-    public void sendUserDetailsChangesAndReceiveConfirmation(String firstName,String lastName,String email,byte[] avatar,Integer updatedProfilePicture){
+    public void sendUserDetailsChangesAndReceiveConfirmationFlag(String firstName,String lastName,String email,byte[] avatar,Integer updatedProfilePicture){
         try {
             output.write(4);
             output.writeUTF(firstName);
@@ -140,6 +153,7 @@ public class ServerCommunication {
 
     public void getUserFriends(){
         try {
+            friendsList.clear();
             Integer friendsNumber = input.readInt();
             for(int i=0;i<friendsNumber;i++){
                 Integer friendID = input.readInt();
@@ -173,7 +187,7 @@ public class ServerCommunication {
         }
     }
 
-    public void sendUserToBeDeleted(Integer friendId){
+    public void sendUserToBeDeletedFlag(Integer friendId){
         try {
             output.write(6);
             output.writeInt(friendId);
@@ -184,12 +198,20 @@ public class ServerCommunication {
         }
     }
 
-    public void sendUserToBeAdded(String userToBeAdded){
+
+    public void sendUserToBeAddedFlag(String userToBeAdded){
         try {
             output.write(7);
             output.writeUTF(userToBeAdded);
             output.flush();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendUserToBeAdded(){
+        try {
             Integer noUser = input.readInt();
             this.userExists = noUser;
 
@@ -198,12 +220,20 @@ public class ServerCommunication {
         }
     }
 
-    public void getConversation(String userToChat){
+    public void getConversationFlag(String userToChat){
         try {
             output.write(8);
             output.writeUTF(userToChat);
             output.flush();
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getConversation(){
+        try {
+            messagesList.clear();
             Integer noMessages = input.readInt();
             this.messagesNumber = noMessages;
             if(noMessages != -1){
@@ -217,7 +247,7 @@ public class ServerCommunication {
         }
     }
 
-    public void sendMessage(String userToChat,String message){
+    public void sendMessageFlag(String userToChat,String message){
         try {
             output.write(9);
             output.writeUTF(userToChat);
@@ -229,22 +259,9 @@ public class ServerCommunication {
         }
     }
 
-    public void checkDifferences(String friendName,Integer messagesNumber){
-        try {
-            output.write(10);
-            output.writeUTF(friendName);
-            output.writeInt(messagesNumber);
-            output.flush();
-
-            Integer msgDifferences = input.readInt();
-            this.newMessages = msgDifferences;
-
-            for(int i=0;i<msgDifferences;i++)
-                this.newMessagesList.add(input.readUTF());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void setUserNewMessages(String friendName,String message){
+        this.newMessageUser = friendName;
+        this.message = message;
     }
 
     public boolean isWaitForThreadFinish() {
@@ -328,19 +345,19 @@ public class ServerCommunication {
         this.messagesList = messagesList;
     }
 
-    public List<String> getNewMessagesList() {
-        return newMessagesList;
+    public String getMessage() {
+        return message;
     }
 
-    public void setNewMessagesList(List<String> newMessagesList) {
-        this.newMessagesList = newMessagesList;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
-    public Integer getNewMessages() {
-        return newMessages;
+    public String getNewMessageUser() {
+        return newMessageUser;
     }
 
-    public void setNewMessages(Integer newMessages) {
-        this.newMessages = newMessages;
+    public void setNewMessageUser(String newMessageUser) {
+        this.newMessageUser = newMessageUser;
     }
 }

@@ -13,7 +13,6 @@ import java.util.List;
  * Created by Razvan on 3/11/2017.
  */
 
-
 @SuppressWarnings("deprecation")
 public class CameraHolderView extends SurfaceView implements SurfaceHolder.Callback {
 

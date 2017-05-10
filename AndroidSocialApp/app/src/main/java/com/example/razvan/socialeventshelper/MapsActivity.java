@@ -22,7 +22,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import butterknife.ButterKnife;
 
-
 /**
  * Created by Razvan on 2/20/2017.
  */

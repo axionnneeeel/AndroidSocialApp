@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
         Integer loginValue = sendCreditentialsAndReceiveConfirmation(usernameString,passwordString);
 
         if(loginValue == 1){
-            Intent eventsIntent = new Intent(LoginActivity.this, FriendsActivity.class);
+            Intent eventsIntent = new Intent(LoginActivity.this, MainEventsActivity.class);
             eventsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(eventsIntent);
             finish();

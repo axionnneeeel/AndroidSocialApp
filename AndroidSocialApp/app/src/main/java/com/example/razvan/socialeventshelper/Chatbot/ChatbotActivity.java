@@ -112,14 +112,11 @@ public class ChatbotActivity extends AppCompatActivity {
 
         new Thread(){
             public void run(){
-                //checking SD card availablility
                 boolean a = isSDCARDAvailable();
-                //receiving the assets from the app directory
                 AssetManager assets = getResources().getAssets();
                 File jayDir = new File(Environment.getExternalStorageDirectory().toString() + "/hari/bots/Hari");
                 boolean b = jayDir.mkdirs();
                 if (jayDir.exists()) {
-                    //Reading the file
                     try {
                         for (String dir : assets.list("Hari")) {
                             File subdir = new File(jayDir.getPath() + "/" + dir);
@@ -133,7 +130,6 @@ public class ChatbotActivity extends AppCompatActivity {
                                 OutputStream out = null;
                                 in = assets.open("Hari/" + dir + "/" + file);
                                 out = new FileOutputStream(jayDir.getPath() + "/" + dir + "/" + file);
-                                //copy file from assets to the mobile's SD card or any secondary memory
                                 copyFile(in, out);
                                 in.close();
                                 in = null;
@@ -146,11 +142,10 @@ public class ChatbotActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 }
-                //get the working directory
+
                 MagicStrings.root_path = Environment.getExternalStorageDirectory().toString() + "/hari";
                 System.out.println("Working Directory = " + MagicStrings.root_path);
                 AIMLProcessor.extension =  new PCAIMLProcessorExtension();
-                //Assign the AIML files to bot for processing
                 bot = new Bot("Hari", MagicStrings.root_path, "chat");
                 chat = new Chat(bot);
                 String[] args = null;
@@ -164,7 +159,6 @@ public class ChatbotActivity extends AppCompatActivity {
         ChatMessage chatMessage = new ChatMessage(message, true, false);
         mAdapter.add(chatMessage);
 
-        //mimicOtherMessage(message);
     }
 
     private void mimicOtherMessage(String message) {
@@ -183,11 +177,11 @@ public class ChatbotActivity extends AppCompatActivity {
         ChatMessage chatMessage = new ChatMessage(null, false, true);
         mAdapter.add(chatMessage);
     }
-    //check SD card availability
+
     public static boolean isSDCARDAvailable(){
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
-    //copying the file
+
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
@@ -195,12 +189,11 @@ public class ChatbotActivity extends AppCompatActivity {
             out.write(buffer, 0, read);
         }
     }
-    //Request and response of user and the bot
+
     public static void mainFunction (String[] args) {
         MagicBooleans.trace_mode = false;
         System.out.println("trace mode = " + MagicBooleans.trace_mode);
         Graphmaster.enableShortCuts = true;
-        Timer timer = new Timer();
         String request = "Hello.";
         String response = chat.multisentenceRespond(request);
 

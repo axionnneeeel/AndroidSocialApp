@@ -76,19 +76,20 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private Integer sendCreditentialsAndReceiveConfirmation(final String user, final String pass,final String email) {
-        final ServerCommunication server = new ServerCommunication(serverSocket);
+        final ServerCommunication server = SocialEventsApplication.getInstance().getServer();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                server.registerOrCheckRegisterValidity(user,pass,email);
-                server.setWaitForThreadFinish(true);
+                server.registerOrCheckRegisterValidityFlag(user,pass,email);
             }
         }).start();
 
         while(!server.isWaitForThreadFinish()){
 
         }
+
+        server.setWaitForThreadFinish(false);
 
         return server.getRegisterFlag();
     }

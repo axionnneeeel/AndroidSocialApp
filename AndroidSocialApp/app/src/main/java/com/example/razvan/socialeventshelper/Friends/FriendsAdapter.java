@@ -12,11 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.R;
 import com.example.razvan.socialeventshelper.Utils.RoundedTransformation;
 import com.squareup.picasso.Picasso;
-
 import java.util.List;
 
 public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.MyViewHolder> {

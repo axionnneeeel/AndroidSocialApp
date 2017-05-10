@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.example.razvan.socialeventshelper.AccountActivity;
 import com.example.razvan.socialeventshelper.Events.MainEventsActivity;
 import com.example.razvan.socialeventshelper.Friends.FriendsActivity;
