@@ -35,6 +35,8 @@ public class ServerCommunication {
     private String newMessageUser="";
     private String message="";
 
+    private String facebookImagePath = "";
+
     public boolean waitForThreadFinish = false;
 
 
@@ -113,8 +115,13 @@ public class ServerCommunication {
 
             this.avatarSize = input.readInt();
             if(avatarSize != 0){
-                avatar = new byte[avatarSize];
-                input.readFully(this.avatar,0,avatarSize);
+                if(avatarSize == -1){
+                    this.facebookImagePath = input.readUTF();
+                }
+                else {
+                    avatar = new byte[avatarSize];
+                    input.readFully(this.avatar, 0, avatarSize);
+                }
             }
 
         } catch (IOException e) {
@@ -136,6 +143,20 @@ public class ServerCommunication {
                 output.flush();
             }
             else output.writeInt(0);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendUserDetails(String firstName,String lastName,String email,String avatar){
+        try {
+            output.write(4);
+            output.writeUTF(firstName);
+            output.writeUTF(lastName);
+            output.writeUTF(email);
+            output.writeInt(-1);
+            output.writeUTF(avatar);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -359,5 +380,13 @@ public class ServerCommunication {
 
     public void setNewMessageUser(String newMessageUser) {
         this.newMessageUser = newMessageUser;
+    }
+
+    public String getFacebookImagePath() {
+        return facebookImagePath;
+    }
+
+    public void setFacebookImagePath(String facebookImagePath) {
+        this.facebookImagePath = facebookImagePath;
     }
 }

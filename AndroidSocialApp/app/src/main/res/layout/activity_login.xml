@@ -117,15 +117,16 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:gravity="center"
-            android:paddingTop="40dp"/>
+            android:paddingTop="50dp"/>
 
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:src="@drawable/facebook_icon"
-            android:layout_gravity="center"
-            android:scaleType="fitCenter"
-            android:layout_marginTop="20dp"/>
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/facebook_login"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="50dp"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"

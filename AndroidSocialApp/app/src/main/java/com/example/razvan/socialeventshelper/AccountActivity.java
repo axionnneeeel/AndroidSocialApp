@@ -103,15 +103,20 @@ public class AccountActivity extends AppCompatActivity {
         lastName.setText(userDetails[3]);
         email.setText(userDetails[1]);
         if(server.getAvatarSize() != 0){
-            File tempFile = null;
-            try {
-                tempFile = File.createTempFile("myPic", null, null);
-                FileOutputStream fos = new FileOutputStream(tempFile);
-                fos.write(server.getAvatar());
-                Picasso.with(this).load(tempFile).transform(new RoundedTransformation()).into(profileImage);
+            if(server.getAvatarSize() == -1){
+                Picasso.with(this).load(server.getFacebookImagePath()).transform(new RoundedTransformation()).into(profileImage);
+            }
+            else {
+                File tempFile = null;
+                try {
+                    tempFile = File.createTempFile("myPic", null, null);
+                    FileOutputStream fos = new FileOutputStream(tempFile);
+                    fos.write(server.getAvatar());
+                    Picasso.with(this).load(tempFile).transform(new RoundedTransformation()).into(profileImage);
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
