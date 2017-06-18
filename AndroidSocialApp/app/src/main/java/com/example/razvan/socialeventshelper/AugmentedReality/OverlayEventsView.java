@@ -16,6 +16,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.CardView;
@@ -74,35 +75,40 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
     private TextView eventDate;
     private TextView distanceToLocation;
 
+    private Camera camera;
+
 
     public OverlayEventsView(Context context,ArrayList<MainEventsModel> events) {
         super(context);
         this.context = context;
         this.myEvents = events;
 
-        scale = context.getResources().getDisplayMetrics().density;
-        inflateEventsView();
+        //if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED )
+        //    ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_ACCESS_CAMERA);
+       // else{
 
-        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        sensorsManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+            scale = context.getResources().getDisplayMetrics().density;
+            inflateEventsView();
 
-        accelerometerSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        compassSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        gyroscopeSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+            locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            sensorsManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
 
-        registerSensors();
-        registerGPS();
+            accelerometerSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            compassSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+            gyroscopeSensor = sensorsManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED )
-            ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_ACCESS_CAMERA);
-        Camera camera = Camera.open();
-        Camera.Parameters params = camera.getParameters();
-        verticalViewAngle = params.getVerticalViewAngle();
-        horizontalViewAngle = params.getHorizontalViewAngle();
-        camera.release();
+            registerSensors();
+            registerGPS();
 
-        targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        targetPaint.setColor(Color.GREEN);
+            camera = Camera.open();
+            Camera.Parameters params = camera.getParameters();
+            verticalViewAngle = params.getVerticalViewAngle();
+            horizontalViewAngle = params.getHorizontalViewAngle();
+            camera.release();
+
+            targetPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            targetPaint.setColor(Color.GREEN);
+        //}
 
     }
 
@@ -195,8 +201,6 @@ public class OverlayEventsView extends View implements SensorEventListener, Loca
 
                     Bitmap eventCardBitmap = Bitmap.createScaledBitmap(view.getDrawingCache(), Math.round(scale)*170, Math.round(scale)*80, true);
                     canvas.drawBitmap(eventCardBitmap, canvas.getWidth() / 2 - (85*Math.round(scale)), canvas.getHeight() / 2 - (40*Math.round(scale)), targetPaint);
-                    canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
-
                     canvas.restore();
                     canvas.save();
                 }

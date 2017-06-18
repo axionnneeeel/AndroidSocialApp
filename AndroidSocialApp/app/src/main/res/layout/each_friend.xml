@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="RazvanShaf"
+            android:text="ciobanurazvand"
             android:textColor="@color/colorPrimary"
             android:textSize="20dp" />
 

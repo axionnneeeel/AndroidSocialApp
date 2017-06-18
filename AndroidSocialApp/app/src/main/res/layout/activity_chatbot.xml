@@ -32,6 +32,14 @@
             android:gravity="end">
 
             <ImageView
+                android:id="@+id/info_menu"
+                android:layout_width="@dimen/imageview_width"
+                android:layout_height="@dimen/imageview_height"
+                android:src="@drawable/ic_error_black_24dp"
+                android:layout_marginEnd="10dp"
+                />
+
+            <ImageView
                 android:id="@+id/show_menu"
                 android:layout_width="@dimen/imageview_width"
                 android:layout_height="@dimen/imageview_height"

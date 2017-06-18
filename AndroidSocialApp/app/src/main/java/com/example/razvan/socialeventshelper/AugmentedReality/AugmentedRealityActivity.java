@@ -4,7 +4,9 @@ package com.example.razvan.socialeventshelper.AugmentedReality;
  * Created by Razvan on 3/11/2017.
  */
 
+import android.Manifest;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,10 +45,17 @@ public class AugmentedRealityActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         findViewById(R.id.appBar).bringToFront();
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
-        
-        if(getIntent().hasExtra("all_events")) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
+            }
+        }
+
+       makeAR();
+    }
+
+    private void makeAR(){
+        if (getIntent().hasExtra("all_events")) {
             contentFlag = 1;
 
             final ArrayList<MainEventsModel> eventsList = getIntent().getParcelableArrayListExtra("all_events");
@@ -110,9 +119,8 @@ public class AugmentedRealityActivity extends AppCompatActivity {
                     return false;
                 }
             });
-        }
-        else if(getIntent().hasExtra("all_places")){
-            
+        } else if (getIntent().hasExtra("all_places")) {
+
             contentFlag = 2;
             final ArrayList<PlacesAdviserModel> placesList = getIntent().getParcelableArrayListExtra("all_places");
             final ArrayList<PlacesAdviserModel> deletedPlacesList = new ArrayList<>();
@@ -193,5 +201,6 @@ public class AugmentedRealityActivity extends AppCompatActivity {
             arContentPlaces.onResume();
         else arContent.onResume();
     }
+
 
 }

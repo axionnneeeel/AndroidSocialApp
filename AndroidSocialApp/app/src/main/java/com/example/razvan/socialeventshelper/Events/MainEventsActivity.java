@@ -86,6 +86,10 @@ public class MainEventsActivity extends AppCompatActivity {
     private String currentCity;
     private String currentCountry;
 
+    private LocationManager locationManager;
+
+    private LocationListener locationListener;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,9 +108,9 @@ public class MainEventsActivity extends AppCompatActivity {
     }
 
     public void findLocationAndCallEvents() {
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        LocationListener locationListener = new LocationListener() {
+        locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 currentLocation = location;
 
@@ -136,11 +140,12 @@ public class MainEventsActivity extends AppCompatActivity {
             }
         };
         if (ContextCompat.checkSelfPermission(this.getApplicationContext(), android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED)
+                != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-
-        SocialEventsApplication.getInstance().registerGPS();
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener);
+        }else {
+            SocialEventsApplication.getInstance().registerGPS();
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener);
+        }
     }
 
     private void initiateEvents(final String cityName){
@@ -207,14 +212,16 @@ public class MainEventsActivity extends AppCompatActivity {
 
             for (int eachJSON = 0; eachJSON < resultJSON.length(); eachJSON++) {
                 JSONObject currentObject = resultJSON.getJSONObject(eachJSON);
-                if (currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\"") && currentObject.toString().contains("\"location\""))
+                if (currentObject.toString().contains("\"description\"") && currentObject.toString().contains("\"place\"") &&
+                        currentObject.toString().contains("\"location\""))
                     eventsIdsTimeSorted.put(currentObject.getString("id"), currentObject.getString("start_time"));
             }
 
             eventsIdsTimeSorted = MapUtil.sortByValue(eventsIdsTimeSorted);
             fetchEventsInformation(eventsIdsTimeSorted);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+
         }
     }
 
@@ -338,5 +345,27 @@ public class MainEventsActivity extends AppCompatActivity {
         Intent agIntent = new Intent(this,AugmentedRealityActivity.class);
         agIntent.putParcelableArrayListExtra("all_events", (ArrayList<? extends Parcelable>) eventsList);
         startActivity(agIntent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION : {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    SocialEventsApplication.getInstance().registerGPS();
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_REFRESH_TIME, LOCATION_REFRESH_DISTANCE, locationListener);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+        }
     }
 }
