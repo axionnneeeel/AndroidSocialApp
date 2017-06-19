@@ -111,9 +111,9 @@ public class ChatbotActivity extends AppCompatActivity {
             public void onClick(View view) {
                 AlertDialog alertDialog = new AlertDialog.Builder(ChatbotActivity.this).create();
                 alertDialog.setTitle("Special commands");
-                alertDialog.setMessage(".horoscope <sign> - today horoscope "+"\n" +
-                        ".weather <city> - today weather" +"\n"+
-                        ".joke - tell a joke");
+                alertDialog.setMessage("horoscope <sign> - today horoscope "+"\n" +
+                        "weather <city> - today weather" +"\n"+
+                        "joke - tell a joke");
                 alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -128,17 +128,47 @@ public class ChatbotActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 String message = mEditTextMessage.getText().toString();
+                final Boolean[] threadDone = {false};
+                Boolean threadNeed = false;
 
-                String response = chat.multisentenceRespond(mEditTextMessage.getText().toString());
-                if(response.contains("DACUM VERE")){
+                final String[] response = {chat.multisentenceRespond(mEditTextMessage.getText().toString())};
+                if(response[0].contains("custom1")){
+                    threadNeed = true;
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                getJSONObjectFromURL("http://api.wunderground.com/api/17922dbff71142a8/conditions/q/CA/San_Francisco.json");
+                                String city = response[0].split(" ")[1];
+                                JSONObject myObject = getJSONObjectFromURL("http://api.wunderground.com/api/17922dbff71142a8/conditions/q/RO/"+city+".json");
+                                String weatherType = myObject.getJSONObject("current_observation").getString("weather");
+                                String weatherCelsius = myObject.getJSONObject("current_observation").getString("temperature_string");
+                                response[0] = city+": Weather type: "+weatherType + " Temperature: " + weatherCelsius;
+                                threadDone[0] = true;
+
                             } catch (IOException | JSONException e) {
-                                e.printStackTrace();
+                                response[0] = "No weather for this city";
+                                threadDone[0] = true;
                         }
+                        }
+                    });
+                    thread.start();
+                }
+                else if(response[0].contains("custom2")){
+                    threadNeed = true;
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String sign = response[0].split(" ")[1];
+                                JSONObject myObject = getJSONObjectFromURL("http://widgets.fabulously40.com/horoscope.json?sign="+sign);
+                                String horoscope = myObject.getJSONObject("horoscope").getString("horoscope");
+                                response[0] = sign+": Horoscope: "+horoscope;
+                                threadDone[0] = true;
+
+                            } catch (IOException | JSONException e) {
+                                response[0] = "No horoscope for this sign";
+                                threadDone[0] = true;
+                            }
                         }
                     });
                     thread.start();
@@ -147,7 +177,10 @@ public class ChatbotActivity extends AppCompatActivity {
                     return;
                 }
                 sendMessage(message);
-                mimicOtherMessage(response);
+                while(!threadDone[0] && threadNeed){
+
+                }
+                mimicOtherMessage(response[0]);
                 mEditTextMessage.setText("");
                 mListView.setSelection(mAdapter.getCount() - 1);
             }

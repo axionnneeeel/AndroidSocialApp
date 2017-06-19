@@ -3,6 +3,7 @@ package com.example.razvan.socialeventshelper;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,9 @@ public class AccountActivity extends AppCompatActivity {
 
     @BindView(R.id.profile_image)
     ImageView profileImage;
+
+    @BindView(R.id.logout_option)
+    ImageView logoutOption;
 
     private Location currentLocation;
     private String currentCityCountry;
@@ -156,6 +160,18 @@ public class AccountActivity extends AppCompatActivity {
         friendsIntent.putExtra("city_country",currentCityCountry);
         friendsIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(friendsIntent);
+        finish();
+    }
+
+    @OnClick(R.id.logout_option)
+    void onLogoutClick(View view){
+        Intent loginIntent = new Intent(this,LoginActivity.class);
+        SharedPreferences.Editor editor = getSharedPreferences("credentials", MODE_PRIVATE).edit();
+        editor.putString("username", "");
+        editor.putString("password", "");
+        editor.apply();
+        loginIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(loginIntent);
         finish();
     }
 
