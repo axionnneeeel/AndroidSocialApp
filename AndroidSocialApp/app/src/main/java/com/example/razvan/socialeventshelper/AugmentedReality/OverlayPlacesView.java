@@ -196,7 +196,7 @@ public class OverlayPlacesView extends View implements SensorEventListener, Loca
 
                     Bitmap eventCardBitmap = Bitmap.createScaledBitmap(view.getDrawingCache(), Math.round(scale)*170, Math.round(scale)*80, true);
                     canvas.drawBitmap(eventCardBitmap, canvas.getWidth() / 2 - (85*Math.round(scale)), canvas.getHeight() / 2 - (40*Math.round(scale)), targetPaint);
-                    //canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
+                    canvas.drawCircle(canvas.getWidth() / 2, canvas.getHeight() / 2, 8.0f, targetPaint);
 
                     canvas.restore();
                     canvas.save();

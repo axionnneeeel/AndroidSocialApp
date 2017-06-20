@@ -139,7 +139,8 @@ public class ChatbotActivity extends AppCompatActivity {
                         public void run() {
                             try {
                                 String city = response[0].split(" ")[1];
-                                JSONObject myObject = getJSONObjectFromURL("http://api.wunderground.com/api/17922dbff71142a8/conditions/q/RO/"+city+".json");
+                                JSONObject myObject = getJSONObjectFromURL("http://api.wunderground.com/api/17922dbff71142a8/conditions/q/RO/"
+                                        +city+".json");
                                 String weatherType = myObject.getJSONObject("current_observation").getString("weather");
                                 String weatherCelsius = myObject.getJSONObject("current_observation").getString("temperature_string");
                                 response[0] = city+": Weather type: "+weatherType + " Temperature: " + weatherCelsius;
@@ -148,7 +149,7 @@ public class ChatbotActivity extends AppCompatActivity {
                             } catch (IOException | JSONException e) {
                                 response[0] = "No weather for this city";
                                 threadDone[0] = true;
-                        }
+                            }
                         }
                     });
                     thread.start();
@@ -220,7 +221,6 @@ public class ChatbotActivity extends AppCompatActivity {
                 }
 
                 MagicStrings.root_path = Environment.getExternalStorageDirectory().toString() + "/socialhelper";
-                System.out.println("Working Directory = " + MagicStrings.root_path);
                 AIMLProcessor.extension =  new PCAIMLProcessorExtension();
                 bot = new Bot("SocialBot", MagicStrings.root_path, "chat");
                 chat = new Chat(bot);

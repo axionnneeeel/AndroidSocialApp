@@ -45,17 +45,10 @@ public class AugmentedRealityActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         findViewById(R.id.appBar).bringToFront();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
-            }
-        }
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.CAMERA}, 1);
 
-       makeAR();
-    }
-
-    private void makeAR(){
-        if (getIntent().hasExtra("all_events")) {
+        if(getIntent().hasExtra("all_events")) {
             contentFlag = 1;
 
             final ArrayList<MainEventsModel> eventsList = getIntent().getParcelableArrayListExtra("all_events");
